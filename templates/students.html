@@ -3,121 +3,474 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Students - Vandana Coaching Center</title>
+<title>Students - Vandana Coaching Center</title>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-        }
+body {
 
-        .header {
-            background: #2563eb;
-            color: white;
-            padding: 22px;
-            text-align: center;
-        }
+    margin: 0;
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 25px;
-        }
+    font-family: Arial, sans-serif;
 
-        .card {
-            background: white;
-            padding: 22px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
+    background: #f4f6f8;
 
-        input,
-        select {
-            padding: 11px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin: 5px;
-        }
+    color: #1f2937;
+}
 
-        button {
-            padding: 11px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
 
-        .add {
-            background: #2563eb;
-            color: white;
-        }
+/* ================= HEADER ================= */
 
-        .delete {
-            background: #dc2626;
-            color: white;
-        }
+.header {
 
-        .search {
-            background: #111827;
-            color: white;
-        }
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    color: white;
 
-        th,
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
+    padding: 28px 20px;
 
-        th {
-            background: #2563eb;
-            color: white;
-        }
+    text-align: center;
+}
 
-        .top-links {
-            margin-bottom: 20px;
-        }
+.header h1 {
 
-        .top-links a {
-            text-decoration: none;
-            margin-right: 10px;
-        }
+    margin: 0;
 
-        @media (max-width: 700px) {
+    font-size: 30px;
+}
 
-            table {
-                font-size: 13px;
-            }
+.header p {
 
-            input,
-            select {
-                width: 100%;
-                margin: 5px 0;
-            }
+    margin: 8px 0 0;
 
-            button {
-                width: 100%;
-                margin-top: 5px;
-            }
+    opacity: 0.9;
+}
 
-        }
 
-    </style>
+/* ================= CONTAINER ================= */
+
+.container {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+
+/* ================= NAV ================= */
+
+.nav {
+
+    background: white;
+
+    padding: 15px 20px;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.nav a {
+
+    text-decoration: none;
+
+    color: #2563eb;
+
+    font-weight: bold;
+
+    margin-right: 20px;
+}
+
+.nav a:hover {
+
+    text-decoration: underline;
+}
+
+
+/* ================= STATS ================= */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.stat-card {
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,0.06);
+
+    text-align: center;
+}
+
+.stat-card h3 {
+
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.stat-card p {
+
+    margin: 8px 0 0;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    color: #2563eb;
+}
+
+
+/* ================= CARD ================= */
+
+.card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 14px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,0.06);
+}
+
+.card h2 {
+
+    margin-top: 0;
+
+    color: #111827;
+}
+
+
+/* ================= FORM ================= */
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+.field {
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.field label {
+
+    margin-bottom: 6px;
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    color: #374151;
+}
+
+input,
+select {
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+input:focus,
+select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+    0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.full {
+
+    grid-column: 1 / -1;
+}
+
+.add-button {
+
+    margin-top: 15px;
+
+    padding: 12px 22px;
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+.add-button:hover {
+
+    background: #1d4ed8;
+}
+
+
+/* ================= SEARCH ================= */
+
+.search-form {
+
+    display: grid;
+
+    grid-template-columns:
+    2fr 1fr auto auto;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+.search-button {
+
+    padding: 12px 20px;
+
+    background: #111827;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+.reset-button {
+
+    padding: 12px 20px;
+
+    background: #6b7280;
+
+    color: white;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    text-align: center;
+}
+
+
+/* ================= TABLE ================= */
+
+.table-wrapper {
+
+    overflow-x: auto;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 900px;
+}
+
+th {
+
+    background: #2563eb;
+
+    color: white;
+
+    padding: 14px;
+
+    text-align: center;
+}
+
+td {
+
+    padding: 13px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    text-align: center;
+}
+
+tr:hover {
+
+    background: #f8fafc;
+}
+
+
+/* ================= BUTTONS ================= */
+
+.action-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    flex-wrap: wrap;
+}
+
+.action-buttons a {
+
+    text-decoration: none;
+}
+
+.action-buttons button {
+
+    border: none;
+
+    color: white;
+
+    padding: 8px 11px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.profile {
+
+    background: #2563eb;
+}
+
+.edit {
+
+    background: #f59e0b;
+}
+
+.delete {
+
+    background: #dc2626;
+}
+
+.profile:hover {
+
+    background: #1d4ed8;
+}
+
+.edit:hover {
+
+    background: #d97706;
+}
+
+.delete:hover {
+
+    background: #b91c1c;
+}
+
+
+/* ================= BADGE ================= */
+
+.badge {
+
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+
+    color: #4338ca;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 800px) {
+
+    .stats {
+
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .search-form {
+
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+
+        padding: 15px;
+    }
+
+    .header h1 {
+
+        font-size: 24px;
+    }
+
+    .nav a {
+
+        display: block;
+
+        margin: 10px 0;
+    }
+}
+
+</style>
 
 </head>
 
@@ -125,15 +478,13 @@
 <body>
 
 
+<!-- ================= HEADER ================= -->
+
 <div class="header">
 
-    <h1>
-        Vandana Coaching Center
-    </h1>
+    <h1>Vandana Coaching Center</h1>
 
-    <p>
-        Student Management
-    </p>
+    <p>Student Management System</p>
 
 </div>
 
@@ -141,215 +492,392 @@
 <div class="container">
 
 
-    <div class="top-links">
+<!-- ================= NAV ================= -->
 
-        <a href="/">
-            🏠 Dashboard
-        </a>
+<div class="nav">
 
-        |
+    <a href="/">🏠 Dashboard</a>
 
-        <a href="/attendance">
-            📋 Attendance
-        </a>
+    <a href="/students">👨‍🎓 Students</a>
 
-        |
+    <a href="/attendance">📋 Attendance</a>
 
-        <a href="/reports">
-            📊 Reports
-        </a>
+    <a href="/reports">📊 Reports</a>
 
-    </div>
+</div>
 
 
-    <!-- ADD STUDENT -->
+<!-- ================= STATS ================= -->
 
-    <div class="card">
+<div class="stats">
 
-        <h2>
-            ➕ Add New Student
-        </h2>
+    <div class="stat-card">
 
-        <form
-            action="/add_student"
-            method="POST"
-        >
+        <h3>Total Students</h3>
 
-            <input
-                type="text"
-                name="name"
-                placeholder="Student Name"
-                required
-            >
-
-            <input
-                type="text"
-                name="class_name"
-                placeholder="Class"
-                required
-            >
-
-            <input
-                type="text"
-                name="roll_number"
-                placeholder="Roll Number"
-            >
-
-            <button
-                type="submit"
-                class="add"
-            >
-                Add Student
-            </button>
-
-        </form>
+        <p>{{ students|length }}</p>
 
     </div>
 
 
-    <!-- SEARCH -->
+    <div class="stat-card">
 
-    <div class="card">
+        <h3>Search Result</h3>
 
-        <h2>
-            🔎 Search Students
-        </h2>
+        <p>{{ students|length }}</p>
 
-        <form
-            method="GET"
-            action="/students"
-        >
-
-            <input
-                type="text"
-                name="search"
-                value="{{ search }}"
-                placeholder="Name or Roll Number"
-            >
+    </div>
 
 
-            <select name="class_name">
+    <div class="stat-card">
 
-                <option value="">
-                    All Classes
-                </option>
+        <h3>Total Classes</h3>
 
-                {% for class_item in classes %}
+        <p>{{ classes|length }}</p>
 
-                <option
-                    value="{{ class_item['class_name'] }}"
-                    {% if selected_class == class_item['class_name'] %}
-                    selected
-                    {% endif %}
+    </div>
+
+</div>
+
+
+<!-- ================= ADD STUDENT ================= -->
+
+<div class="card">
+
+    <h2>➕ Add New Student</h2>
+
+    <form
+        method="POST"
+        action="/add_student"
+    >
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label>Student Name *</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter student name"
+                    required
                 >
 
-                    {{ class_item['class_name'] }}
-
-                </option>
-
-                {% endfor %}
-
-            </select>
+            </div>
 
 
-            <button
-                type="submit"
-                class="search"
+            <div class="field">
+
+                <label>Class *</label>
+
+                <input
+                    type="text"
+                    name="class_name"
+                    placeholder="Example: Class 5"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Roll Number</label>
+
+                <input
+                    type="text"
+                    name="roll_number"
+                    placeholder="Enter roll number"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Section</label>
+
+                <input
+                    type="text"
+                    name="section"
+                    placeholder="Example: A"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Parent / Guardian Name</label>
+
+                <input
+                    type="text"
+                    name="guardian_name"
+                    placeholder="Enter parent name"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Parent Mobile Number</label>
+
+                <input
+                    type="tel"
+                    name="guardian_phone"
+                    placeholder="Enter mobile number"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="add-button"
+        >
+            ➕ Add Student
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- ================= SEARCH ================= -->
+
+<div class="card">
+
+    <h2>🔎 Search Students</h2>
+
+    <form
+        method="GET"
+        action="/students"
+        class="search-form"
+    >
+
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="Search name, roll number, parent or mobile..."
+        >
+
+
+        <select name="class_name">
+
+            <option value="">
+                All Classes
+            </option>
+
+            {% for class_item in classes %}
+
+            <option
+                value="{{ class_item['class_name'] }}"
+                {% if selected_class == class_item['class_name'] %}
+                selected
+                {% endif %}
             >
-                Search
-            </button>
 
-        </form>
+                {{ class_item['class_name'] }}
 
-    </div>
+            </option>
+
+            {% endfor %}
+
+        </select>
 
 
-    <!-- STUDENT LIST -->
+        <button
+            type="submit"
+            class="search-button"
+        >
+            🔍 Search
+        </button>
 
-    <div class="card">
 
-        <h2>
-            👨‍🎓 Student List
-        </h2>
+        <a
+            href="/students"
+            class="reset-button"
+        >
+            Reset
+        </a>
+
+    </form>
+
+</div>
+
+
+<!-- ================= STUDENT TABLE ================= -->
+
+<div class="card">
+
+    <h2>👨‍🎓 Student List</h2>
+
+    <div class="table-wrapper">
 
         <table>
 
-            <tr>
+            <thead>
 
-                <th>
-                    Roll
-                </th>
+                <tr>
 
-                <th>
-                    Name
-                </th>
+                    <th>Roll</th>
 
-                <th>
-                    Class
-                </th>
+                    <th>Student</th>
 
-                <th>
-                    Action
-                </th>
+                    <th>Class</th>
 
-            </tr>
+                    <th>Section</th>
 
+                    <th>Parent / Guardian</th>
+
+                    <th>Mobile</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
 
             {% for student in students %}
 
-            <tr>
+                <tr>
 
-                <td>
-                    {{ student["roll_number"] }}
-                </td>
+                    <td>
 
-                <td>
-                    {{ student["name"] }}
-                </td>
+                        {{ student['roll_number'] or '-' }}
 
-                <td>
-                    {{ student["class_name"] }}
-                </td>
+                    </td>
 
-                <td>
-<a href="/edit_student/{{ student['id'] }}">
 
-    <button
-        style="
-            background:#f59e0b;
-            color:white;
-        "
-    >
-        ✏️ Edit
-    </button>
+                    <td>
 
-</a>
-                    <a
-                        href="/delete_student/{{ student['id'] }}"
-                        onclick="return confirm('Delete this student?')"
-                    >
+                        <strong>
+                            {{ student['name'] }}
+                        </strong>
 
-                        <button class="delete">
-                            Delete
-                        </button>
+                    </td>
 
-                    </a>
 
-                </td>
+                    <td>
 
-            </tr>
+                        {{ student['class_name'] }}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if student['section'] %}
+
+                            <span class="badge">
+                                {{ student['section'] }}
+                            </span>
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ student['guardian_name'] or '-' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ student['guardian_phone'] or '-' }}
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="action-buttons">
+
+
+                            <a
+                                href="/student_profile/{{ student['id'] }}"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="profile"
+                                >
+                                    👤 Profile
+                                </button>
+
+                            </a>
+
+
+                            <a
+                                href="/edit_student/{{ student['id'] }}"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="edit"
+                                >
+                                    ✏️ Edit
+                                </button>
+
+                            </a>
+
+
+                            <a
+                                href="/delete_student/{{ student['id'] }}"
+                                onclick="return confirm('Kya aap is student ko delete karna chahte hain? Iski attendance bhi delete ho jayegi.');"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="delete"
+                                >
+                                    🗑️ Delete
+                                </button>
+
+                            </a>
+
+
+                        </div>
+
+                    </td>
+
+                </tr>
 
             {% else %}
 
-            <tr>
+                <tr>
 
-                <td colspan="4">
-                    No students found.
-                </td>
+                    <td
+                        colspan="7"
+                        style="padding:30px;"
+                    >
 
-            </tr>
+                        😔 Koi student nahi mila.
+
+                    </td>
+
+                </tr>
 
             {% endfor %}
+
+            </tbody>
 
         </table>
 
@@ -357,6 +885,8 @@
 
 </div>
 
+
+</div>
 
 </body>
 

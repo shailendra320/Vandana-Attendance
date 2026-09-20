@@ -3,310 +3,698 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Daily Attendance</title>
+<title>Daily Attendance - Vandana Coaching Center</title>
 
-    <style>
+<style>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 20px;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
 
-        h1 {
-            text-align: center;
-        }
+/* HEADER */
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
+.header {
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
 
-        .date-box {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    color: white;
+    padding: 28px 20px;
+    text-align: center;
+}
 
-        input[type="date"] {
-            padding: 10px;
-            font-size: 16px;
-        }
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.header p {
+    margin: 8px 0 0;
+    opacity: 0.9;
+}
 
-        th,
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
+/* CONTAINER */
 
-        th {
-            background: #2563eb;
-            color: white;
-        }
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+}
 
-        .present {
-            color: green;
-            font-weight: bold;
-        }
+/* NAV */
 
-        .absent {
-            color: red;
-            font-weight: bold;
-        }
+.nav {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
 
-        button {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.06);
+}
 
-        .save {
-            background: #2563eb;
-            color: white;
-            margin-top: 20px;
-            width: 100%;
-            font-size: 16px;
-        }
+.nav a {
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: bold;
+    margin-right: 20px;
+}
 
-        .back {
-            background: #555;
-            color: white;
-            margin-bottom: 15px;
-        }
+/* CARD */
 
-        .status-option {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    margin-bottom: 20px;
 
-    </style>
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.06);
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+/* DATE */
+
+.date-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.date-form input {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.date-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* CONTROLS */
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.control-button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.present-all {
+    background: #16a34a;
+}
+
+.absent-all {
+    background: #dc2626;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 220px;
+    padding: 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+/* TABLE */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th {
+    background: #2563eb;
+    color: white;
+    padding: 14px;
+}
+
+td {
+    padding: 13px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* STUDENT NAME */
+
+.student-name {
+    text-align: left;
+    font-weight: bold;
+}
+
+.student-info {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* RADIO */
+
+.radio-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.radio-box input {
+    width: 18px;
+    height: 18px;
+}
+
+/* PRESENT */
+
+.present-label {
+    color: #16a34a;
+}
+
+/* ABSENT */
+
+.absent-label {
+    color: #dc2626;
+}
+
+/* SAVE */
+
+.save-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 9px;
+    background: #111827;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #000000;
+}
+
+/* EMPTY */
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .nav a {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .date-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-form input,
+    .date-button {
+        width: 100%;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .control-button,
+    .search-box {
+        width: 100%;
+    }
+}
+
+</style>
 
 </head>
 
 
 <body>
 
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>
+        Vandana Coaching Center
+    </h1>
+
+    <p>
+        📋 Daily Student Attendance
+    </p>
+
+</div>
+
+
 <div class="container">
 
-    <h1>Vandana Coaching Center</h1>
 
-    <div class="card">
+<!-- NAV -->
 
-        <a href="/">
-            <button class="back">
-                ← Home
-            </button>
-        </a>
+<div class="nav">
 
-        <h2>📋 Daily Attendance</h2>
+    <a href="/">
+        🏠 Dashboard
+    </a>
 
+    <a href="/students">
+        👨‍🎓 Students
+    </a>
 
-        <!-- DATE -->
+    <a href="/attendance">
+        📋 Attendance
+    </a>
 
-        <div class="date-box">
+    <a href="/reports">
+        📊 Reports
+    </a>
 
-            <form method="GET" action="/attendance">
-
-                <label>
-                    Select Date:
-                </label>
-
-                <input
-                    type="date"
-                    name="date"
-                    value="{{ selected_date }}"
-                    onchange="this.form.submit()"
-                >
-
-            </form>
-
-        </div>
+</div>
 
 
-        <!-- ATTENDANCE FORM -->
+<!-- DATE -->
 
-        <form
-            method="POST"
-            action="/save_attendance"
+<div class="card">
+
+    <h2>
+        📅 Select Attendance Date
+    </h2>
+
+    <form
+        method="GET"
+        action="/attendance"
+        class="date-form"
+    >
+
+        <input
+            type="date"
+            name="date"
+            value="{{ selected_date }}"
+            required
         >
 
-            <input
-                type="hidden"
-                name="attendance_date"
-                value="{{ selected_date }}"
-            >
+        <button
+            type="submit"
+            class="date-button"
+        >
+            🔍 Load Attendance
+        </button>
 
+    </form>
+
+</div>
+
+
+<!-- ATTENDANCE -->
+
+<div class="card">
+
+    <h2>
+        📝 Attendance
+    </h2>
+
+    <p>
+        Date:
+        <strong>{{ selected_date }}</strong>
+    </p>
+
+
+    <!-- CONTROLS -->
+
+    <div class="controls">
+
+        <button
+            type="button"
+            class="control-button present-all"
+            onclick="markAll('Present')"
+        >
+            ✅ Present All
+        </button>
+
+
+        <button
+            type="button"
+            class="control-button absent-all"
+            onclick="markAll('Absent')"
+        >
+            ❌ Absent All
+        </button>
+
+
+        <input
+            type="text"
+            id="studentSearch"
+            class="search-box"
+            placeholder="🔎 Search student..."
+            onkeyup="searchStudents()"
+        >
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form
+        method="POST"
+        action="/save_attendance"
+        id="attendanceForm"
+    >
+
+        <input
+            type="hidden"
+            name="attendance_date"
+            value="{{ selected_date }}"
+        >
+
+
+        <div class="table-wrapper">
 
             <table>
 
-                <tr>
+                <thead>
 
-                    <th>
-                        Roll No.
-                    </th>
+                    <tr>
 
-                    <th>
-                        Student Name
-                    </th>
+                        <th>
+                            #
+                        </th>
 
-                    <th>
-                        Class
-                    </th>
+                        <th>
+                            Student
+                        </th>
 
-                    <th>
-                        Attendance
-                    </th>
+                        <th>
+                            Class
+                        </th>
 
-                </tr>
+                        <th>
+                            Section
+                        </th>
 
+                        <th>
+                            Present
+                        </th>
+
+                        <th>
+                            Absent
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentTable">
 
                 {% for student in students %}
 
-                <tr>
+                    {% set current_status =
+                        attendance_dict.get(student['id'], '') %}
 
-                    <td>
-                        {{ student["roll_number"] }}
-                    </td>
 
-                    <td>
-                        {{ student["name"] }}
-                    </td>
+                    <tr class="student-row">
 
-                    <td>
-                        {{ student["class_name"] }}
-                    </td>
 
-                    <td>
+                        <td>
+                            {{ loop.index }}
+                        </td>
 
-                        <div class="status-option">
 
-                            <label class="present">
+                        <td class="student-name">
+
+                            {{ student['name'] }}
+
+                            <div class="student-info">
+
+                                Roll:
+                                {{ student['roll_number'] or '-' }}
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ student['class_name'] }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ student['section'] or '-' }}
+
+                        </td>
+
+
+                        <td>
+
+                            <label
+                                class="radio-box present-label"
+                            >
 
                                 <input
                                     type="radio"
                                     name="status_{{ student['id'] }}"
                                     value="Present"
 
-                                    {% if attendance_dict.get(student["id"]) == "Present" %}
+                                    {% if current_status == 'Present' %}
                                     checked
                                     {% endif %}
                                 >
 
-                                ✅ Present
+                                Present
 
                             </label>
 
+                        </td>
 
-                            <label class="absent">
+
+                        <td>
+
+                            <label
+                                class="radio-box absent-label"
+                            >
 
                                 <input
                                     type="radio"
                                     name="status_{{ student['id'] }}"
                                     value="Absent"
 
-                                    {% if attendance_dict.get(student["id"]) == "Absent" %}
+                                    {% if current_status == 'Absent' %}
                                     checked
                                     {% endif %}
                                 >
 
-                                ❌ Absent
+                                Absent
 
                             </label>
 
-                        </div>
+                        </td>
 
-                    </td>
 
-                </tr>
+                    </tr>
 
                 {% else %}
 
-                <tr>
+                    <tr>
 
-                    <td colspan="4">
+                        <td
+                            colspan="6"
+                            class="empty"
+                        >
 
-                        No students found.
+                            😔 Koi student available nahi hai.
 
-                        <br><br>
+                            <br><br>
 
-                        First add students.
+                            Pehle Students page se student add karein.
 
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
                 {% endfor %}
 
+                </tbody>
+
             </table>
 
+        </div>
 
-            {% if students %}
 
-            <button
-                type="submit"
-                class="save"
-            >
-                💾 Save Attendance
-            </button>
+        {% if students %}
 
-            {% endif %}
+        <br>
 
-        </form>
+        <button
+            type="submit"
+            class="save-button"
+        >
+            💾 Save Today's Attendance
+        </button>
 
-    </div>
+        {% endif %}
+
+
+    </form>
 
 </div>
+
+
+</div>
+
+
+<script>
+
+/* =========================
+   MARK ALL
+========================= */
+
+function markAll(status) {
+
+    const radios = document.querySelectorAll(
+        'input[type="radio"]'
+    );
+
+    radios.forEach(function(radio) {
+
+        if (radio.value === status) {
+
+            radio.checked = true;
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   SEARCH STUDENTS
+========================= */
+
+function searchStudents() {
+
+    const input =
+        document.getElementById(
+            "studentSearch"
+        );
+
+    const search =
+        input.value.toLowerCase();
+
+    const rows =
+        document.querySelectorAll(
+            ".student-row"
+        );
+
+    rows.forEach(function(row) {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        if (text.includes(search)) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   SAVE CONFIRMATION
+========================= */
+
+document
+    .getElementById("attendanceForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            const confirmed =
+                confirm(
+                    "Kya aap attendance save karna chahte hain?"
+                );
+
+            if (!confirmed) {
+
+                event.preventDefault();
+
+            }
+
+        }
+    );
+
+</script>
+
 
 </body>
-<div style="
-    background:#2563eb;
-    color:white;
-    padding:15px;
-    text-align:center;
-">
 
-    <h2>
-        Vandana Coaching Center
-    </h2>
-
-    <div>
-
-        <a href="/"
-           style="color:white;margin:10px;">
-            🏠 Dashboard
-        </a>
-
-        <a href="/students"
-           style="color:white;margin:10px;">
-            👨‍🎓 Students
-        </a>
-
-        <a href="/reports"
-           style="color:white;margin:10px;">
-            📊 Reports
-        </a>
-
-    </div>
-
-</div>
 </html>

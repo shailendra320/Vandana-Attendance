@@ -32,6 +32,10 @@ def init_database():
 
     cursor = conn.cursor()
 
+    # -----------------------------
+    # STUDENTS TABLE
+    # -----------------------------
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS students (
 
@@ -41,10 +45,54 @@ def init_database():
 
             class_name TEXT NOT NULL,
 
-            roll_number TEXT
+            roll_number TEXT,
+
+            guardian_name TEXT,
+
+            guardian_phone TEXT,
+
+            section TEXT
 
         )
     """)
+
+    # -----------------------------
+    # OLD DATABASE MIGRATION
+    # -----------------------------
+    # Agar purani database mein ye columns nahi hain
+    # to automatically add ho jayenge.
+
+    columns = [
+        row[1]
+        for row in cursor.execute(
+            "PRAGMA table_info(students)"
+        ).fetchall()
+    ]
+
+    if "guardian_name" not in columns:
+
+        cursor.execute("""
+            ALTER TABLE students
+            ADD COLUMN guardian_name TEXT
+        """)
+
+    if "guardian_phone" not in columns:
+
+        cursor.execute("""
+            ALTER TABLE students
+            ADD COLUMN guardian_phone TEXT
+        """)
+
+    if "section" not in columns:
+
+        cursor.execute("""
+            ALTER TABLE students
+            ADD COLUMN section TEXT
+        """)
+
+    # -----------------------------
+    # ATTENDANCE TABLE
+    # -----------------------------
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS attendance (
@@ -57,7 +105,8 @@ def init_database():
 
             status TEXT NOT NULL,
 
-            FOREIGN KEY (student_id) REFERENCES students(id)
+            FOREIGN KEY (student_id)
+            REFERENCES students(id)
 
         )
     """)
@@ -154,19 +203,31 @@ def students():
 
     params = []
 
+    # -----------------------------
+    # SEARCH
+    # -----------------------------
+
     if search:
 
         query += """
             AND (
                 name LIKE ?
                 OR roll_number LIKE ?
+                OR guardian_name LIKE ?
+                OR guardian_phone LIKE ?
             )
         """
 
         params.extend([
             f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
             f"%{search}%"
         ])
+
+    # -----------------------------
+    # CLASS FILTER
+    # -----------------------------
 
     if selected_class:
 
@@ -177,7 +238,10 @@ def students():
         params.append(selected_class)
 
     query += """
-        ORDER BY class_name, roll_number, name
+        ORDER BY
+            class_name,
+            roll_number,
+            name
     """
 
     students = conn.execute(
@@ -216,11 +280,35 @@ def students():
 )
 def add_student():
 
-    name = request.form["name"].strip()
+    name = request.form.get(
+        "name",
+        ""
+    ).strip()
 
-    class_name = request.form["class_name"].strip()
+    class_name = request.form.get(
+        "class_name",
+        ""
+    ).strip()
 
-    roll_number = request.form["roll_number"].strip()
+    roll_number = request.form.get(
+        "roll_number",
+        ""
+    ).strip()
+
+    guardian_name = request.form.get(
+        "guardian_name",
+        ""
+    ).strip()
+
+    guardian_phone = request.form.get(
+        "guardian_phone",
+        ""
+    ).strip()
+
+    section = request.form.get(
+        "section",
+        ""
+    ).strip()
 
     if not name or not class_name:
 
@@ -233,14 +321,20 @@ def add_student():
         (
             name,
             class_name,
-            roll_number
+            roll_number,
+            guardian_name,
+            guardian_phone,
+            section
         )
 
-        VALUES (?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     """, (
         name,
         class_name,
-        roll_number
+        roll_number,
+        guardian_name,
+        guardian_phone,
+        section
     ))
 
     conn.commit()
@@ -282,11 +376,35 @@ def edit_student(student_id):
 
     if request.method == "POST":
 
-        name = request.form["name"].strip()
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
 
-        class_name = request.form["class_name"].strip()
+        class_name = request.form.get(
+            "class_name",
+            ""
+        ).strip()
 
-        roll_number = request.form["roll_number"].strip()
+        roll_number = request.form.get(
+            "roll_number",
+            ""
+        ).strip()
+
+        guardian_name = request.form.get(
+            "guardian_name",
+            ""
+        ).strip()
+
+        guardian_phone = request.form.get(
+            "guardian_phone",
+            ""
+        ).strip()
+
+        section = request.form.get(
+            "section",
+            ""
+        ).strip()
 
         if not name or not class_name:
 
@@ -298,15 +416,28 @@ def edit_student(student_id):
             UPDATE students
 
             SET
+
                 name = ?,
+
                 class_name = ?,
-                roll_number = ?
+
+                roll_number = ?,
+
+                guardian_name = ?,
+
+                guardian_phone = ?,
+
+                section = ?
 
             WHERE id = ?
+
         """, (
             name,
             class_name,
             roll_number,
+            guardian_name,
+            guardian_phone,
+            section,
             student_id
         ))
 
@@ -337,21 +468,19 @@ def delete_student(student_id):
 
     # Student ki attendance bhi delete hogi
 
-    conn.execute(
-        """
+    conn.execute("""
         DELETE FROM attendance
         WHERE student_id = ?
-        """,
-        (student_id,)
-    )
+    """, (
+        student_id,
+    ))
 
-    conn.execute(
-        """
+    conn.execute("""
         DELETE FROM students
         WHERE id = ?
-        """,
-        (student_id,)
-    )
+    """, (
+        student_id,
+    ))
 
     conn.commit()
 
@@ -377,13 +506,21 @@ def attendance():
     students = conn.execute("""
         SELECT *
         FROM students
-        ORDER BY class_name, roll_number, name
+        ORDER BY
+            class_name,
+            roll_number,
+            name
     """).fetchall()
 
     attendance_records = conn.execute("""
-        SELECT student_id, status
+        SELECT
+            student_id,
+            status
+
         FROM attendance
+
         WHERE attendance_date = ?
+
     """, (
         selected_date,
     )).fetchall()
@@ -392,7 +529,8 @@ def attendance():
 
     attendance_dict = {
 
-        record["student_id"]: record["status"]
+        record["student_id"]:
+        record["status"]
 
         for record in attendance_records
 
@@ -446,6 +584,7 @@ def save_attendance():
             WHERE student_id = ?
 
             AND attendance_date = ?
+
         """, (
             student_id,
             attendance_date
@@ -461,6 +600,7 @@ def save_attendance():
                 WHERE student_id = ?
 
                 AND attendance_date = ?
+
             """, (
                 status,
                 student_id,
@@ -478,6 +618,7 @@ def save_attendance():
                 )
 
                 VALUES (?, ?, ?)
+
             """, (
                 student_id,
                 attendance_date,
@@ -500,9 +641,6 @@ def save_attendance():
 @app.route("/reports")
 def reports():
 
-    # Month filter
-    # Example: 2026-09
-
     selected_month = request.args.get(
         "month",
         ""
@@ -513,16 +651,15 @@ def reports():
     students = conn.execute("""
         SELECT *
         FROM students
-        ORDER BY class_name, roll_number, name
+        ORDER BY
+            class_name,
+            roll_number,
+            name
     """).fetchall()
 
     report_data = []
 
     for student in students:
-
-        # -----------------------------------------
-        # MONTH FILTER
-        # -----------------------------------------
 
         if selected_month:
 
@@ -534,6 +671,7 @@ def reports():
                 WHERE student_id = ?
 
                 AND attendance_date LIKE ?
+
             """, (
                 student["id"],
                 f"{selected_month}%"
@@ -549,6 +687,7 @@ def reports():
                 AND status = 'Present'
 
                 AND attendance_date LIKE ?
+
             """, (
                 student["id"],
                 f"{selected_month}%"
@@ -562,6 +701,7 @@ def reports():
                 FROM attendance
 
                 WHERE student_id = ?
+
             """, (
                 student["id"],
             )).fetchone()[0]
@@ -574,6 +714,7 @@ def reports():
                 WHERE student_id = ?
 
                 AND status = 'Present'
+
             """, (
                 student["id"],
             )).fetchone()[0]
@@ -641,6 +782,12 @@ def student_report(student_id):
         student_id,
     )).fetchone()
 
+    if not student:
+
+        conn.close()
+
+        return "Student not found"
+
     attendance_records = conn.execute("""
         SELECT
             attendance_date,
@@ -651,6 +798,7 @@ def student_report(student_id):
         WHERE student_id = ?
 
         ORDER BY attendance_date DESC
+
     """, (
         student_id,
     )).fetchall()
@@ -700,6 +848,85 @@ def student_report(student_id):
 
 
 # =====================================================
+# STUDENT PROFILE
+# =====================================================
+
+@app.route(
+    "/student_profile/<int:student_id>"
+)
+def student_profile(student_id):
+
+    conn = get_db_connection()
+
+    student = conn.execute("""
+        SELECT *
+        FROM students
+        WHERE id = ?
+    """, (
+        student_id,
+    )).fetchone()
+
+    if not student:
+
+        conn.close()
+
+        return "Student not found"
+
+    total = conn.execute("""
+        SELECT COUNT(*)
+
+        FROM attendance
+
+        WHERE student_id = ?
+
+    """, (
+        student_id,
+    )).fetchone()[0]
+
+    present = conn.execute("""
+        SELECT COUNT(*)
+
+        FROM attendance
+
+        WHERE student_id = ?
+
+        AND status = 'Present'
+
+    """, (
+        student_id,
+    )).fetchone()[0]
+
+    absent = total - present
+
+    if total > 0:
+
+        percentage = round(
+            (present / total) * 100,
+            2
+        )
+
+    else:
+
+        percentage = 0
+
+    conn.close()
+
+    return render_template(
+        "student_profile.html",
+
+        student=student,
+
+        total=total,
+
+        present=present,
+
+        absent=absent,
+
+        percentage=percentage
+    )
+
+
+# =====================================================
 # CSV EXPORT
 # =====================================================
 
@@ -715,16 +942,29 @@ def export_csv():
 
     query = """
         SELECT
+
             students.roll_number,
+
             students.name,
+
             students.class_name,
+
+            students.guardian_name,
+
+            students.guardian_phone,
+
+            students.section,
+
             attendance.attendance_date,
+
             attendance.status
 
         FROM attendance
 
         JOIN students
-        ON students.id = attendance.student_id
+
+        ON students.id =
+        attendance.student_id
     """
 
     params = []
@@ -741,8 +981,11 @@ def export_csv():
 
     query += """
         ORDER BY
+
             attendance.attendance_date DESC,
+
             students.class_name,
+
             students.roll_number
     """
 
@@ -752,8 +995,6 @@ def export_csv():
     ).fetchall()
 
     conn.close()
-
-    # CSV file memory mein create hoga
 
     output = io.StringIO()
 
@@ -765,6 +1006,9 @@ def export_csv():
         "Roll Number",
         "Student Name",
         "Class",
+        "Section",
+        "Guardian Name",
+        "Guardian Phone",
         "Date",
         "Status"
     ])
@@ -774,11 +1018,23 @@ def export_csv():
     for record in records:
 
         writer.writerow([
+
             record["roll_number"],
+
             record["name"],
+
             record["class_name"],
+
+            record["section"],
+
+            record["guardian_name"],
+
+            record["guardian_phone"],
+
             record["attendance_date"],
+
             record["status"]
+
         ])
 
     csv_data = output.getvalue()
@@ -802,8 +1058,10 @@ def export_csv():
         mimetype="text/csv",
 
         headers={
+
             "Content-Disposition":
             f"attachment; filename={filename}"
+
         }
 
     )
@@ -818,7 +1076,11 @@ if __name__ == "__main__":
     init_database()
 
     app.run(
+
         debug=True,
+
         host="127.0.0.1",
+
         port=5000
+
     )

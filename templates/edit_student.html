@@ -3,109 +3,226 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Edit Student - Vandana Coaching Center</title>
+<title>Edit Student - Vandana Coaching Center</title>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-        }
+body {
 
-        .header {
-            background: #2563eb;
-            color: white;
-            padding: 22px;
-            text-align: center;
-        }
+    margin: 0;
 
-        .container {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-        }
+    font-family: Arial, sans-serif;
 
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-        }
+    background: #f4f6f8;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
+.header {
 
-        label {
-            font-weight: bold;
-        }
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
 
-        button {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 7px;
-            background: #2563eb;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    color: white;
 
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            text-decoration: none;
-        }
+    text-align: center;
 
-    </style>
+    padding: 28px 20px;
+}
+
+.header h1 {
+
+    margin: 0;
+}
+
+.header p {
+
+    margin-bottom: 0;
+
+    opacity: 0.9;
+}
+
+.container {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+.card {
+
+    background: white;
+
+    padding: 28px;
+
+    border-radius: 14px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+
+    margin-top: 0;
+
+    color: #111827;
+}
+
+.field {
+
+    margin-bottom: 18px;
+}
+
+label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: bold;
+
+    color: #374151;
+}
+
+input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+    0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.buttons {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+.update {
+
+    flex: 1;
+
+    padding: 13px;
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+.back {
+
+    flex: 1;
+
+    padding: 13px;
+
+    background: #6b7280;
+
+    color: white;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+
+        padding: 15px;
+    }
+
+    .card {
+
+        padding: 20px;
+    }
+
+    .buttons {
+
+        flex-direction: column;
+    }
+}
+
+</style>
 
 </head>
 
+
 <body>
+
 
 <div class="header">
 
-    <h1>
-        Vandana Coaching Center
-    </h1>
+    <h1>Vandana Coaching Center</h1>
 
-    <p>
-        Edit Student
-    </p>
+    <p>✏️ Edit Student</p>
 
 </div>
 
 
 <div class="container">
 
-    <div class="card">
 
-        <h2>
-            ✏️ Edit Student Details
-        </h2>
+<div class="card">
 
-        <form
-            action="/edit_student/{{ student['id'] }}"
-            method="POST"
-        >
+    <h2>Student Information</h2>
+
+
+    <form
+        method="POST"
+        action="/edit_student/{{ student['id'] }}"
+    >
+
+
+        <div class="field">
 
             <label>
-                Student Name
+                Student Name *
             </label>
 
             <input
@@ -115,9 +232,13 @@
                 required
             >
 
+        </div>
+
+
+        <div class="field">
 
             <label>
-                Class
+                Class *
             </label>
 
             <input
@@ -127,6 +248,10 @@
                 required
             >
 
+        </div>
+
+
+        <div class="field">
 
             <label>
                 Roll Number
@@ -135,25 +260,84 @@
             <input
                 type="text"
                 name="roll_number"
-                value="{{ student['roll_number'] }}"
+                value="{{ student['roll_number'] or '' }}"
             >
 
+        </div>
 
-            <button type="submit">
+
+        <div class="field">
+
+            <label>
+                Section
+            </label>
+
+            <input
+                type="text"
+                name="section"
+                value="{{ student['section'] or '' }}"
+                placeholder="Example: A"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Parent / Guardian Name
+            </label>
+
+            <input
+                type="text"
+                name="guardian_name"
+                value="{{ student['guardian_name'] or '' }}"
+                placeholder="Enter parent name"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Parent Mobile Number
+            </label>
+
+            <input
+                type="tel"
+                name="guardian_phone"
+                value="{{ student['guardian_phone'] or '' }}"
+                placeholder="Enter mobile number"
+            >
+
+        </div>
+
+
+        <div class="buttons">
+
+            <button
+                type="submit"
+                class="update"
+            >
                 💾 Update Student
             </button>
 
-        </form>
+
+            <a
+                href="/students"
+                class="back"
+            >
+                ← Back to Students
+            </a>
+
+        </div>
 
 
-        <a
-            href="/students"
-            class="back"
-        >
-            ← Back to Students
-        </a>
+    </form>
 
-    </div>
+</div>
+
 
 </div>
 

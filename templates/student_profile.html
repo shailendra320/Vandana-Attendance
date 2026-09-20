@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Student Profile - Vandana Coaching Center
+</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f6f8;
+
+    color: #1f2937;
+}
+
+
+/* ================= HEADER ================= */
+
+.header {
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color: white;
+
+    padding: 30px 20px;
+
+    text-align: center;
+}
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+}
+
+.header p {
+
+    margin: 8px 0 0;
+
+    opacity: 0.9;
+}
+
+
+/* ================= CONTAINER ================= */
+
+.container {
+
+    max-width: 1000px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+
+/* ================= NAV ================= */
+
+.nav {
+
+    background: white;
+
+    padding: 15px 20px;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.06);
+}
+
+.nav a {
+
+    text-decoration: none;
+
+    color: #2563eb;
+
+    font-weight: bold;
+
+    margin-right: 20px;
+}
+
+
+/* ================= PROFILE CARD ================= */
+
+.profile-card {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.08);
+
+    margin-bottom: 20px;
+}
+
+
+/* ================= PROFILE TOP ================= */
+
+.profile-top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.avatar {
+
+    width: 85px;
+
+    height: 85px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 42px;
+}
+
+.profile-name h2 {
+
+    margin: 0;
+
+    font-size: 28px;
+
+    color: #111827;
+}
+
+.profile-name p {
+
+    margin: 6px 0;
+
+    color: #6b7280;
+}
+
+
+/* ================= DETAILS ================= */
+
+.details {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+.detail-box {
+
+    background: #f8fafc;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    border: 1px solid #e5e7eb;
+}
+
+.detail-label {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    margin-bottom: 6px;
+}
+
+.detail-value {
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    color: #111827;
+}
+
+
+/* ================= PHONE ================= */
+
+.phone-link {
+
+    color: #2563eb;
+
+    text-decoration: none;
+}
+
+.phone-link:hover {
+
+    text-decoration: underline;
+}
+
+
+/* ================= BUTTONS ================= */
+
+.buttons {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+    flex-wrap: wrap;
+}
+
+.btn {
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: white;
+
+    font-weight: bold;
+
+    display: inline-block;
+}
+
+.edit {
+
+    background: #f59e0b;
+}
+
+.report {
+
+    background: #111827;
+}
+
+.back {
+
+    background: #6b7280;
+}
+
+
+/* ================= ATTENDANCE ================= */
+
+.attendance-title {
+
+    margin-top: 0;
+
+    margin-bottom: 20px;
+}
+
+.attendance-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.attendance-card {
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+}
+
+.attendance-card h3 {
+
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.attendance-card p {
+
+    margin: 8px 0 0;
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+.total {
+
+    color: #2563eb;
+}
+
+.present {
+
+    color: #16a34a;
+}
+
+.absent {
+
+    color: #dc2626;
+}
+
+.percentage {
+
+    color: #7c3aed;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    .container {
+
+        padding: 15px;
+    }
+
+    .profile-card {
+
+        padding: 20px;
+    }
+
+    .profile-top {
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .profile-name h2 {
+
+        font-size: 23px;
+    }
+
+    .details {
+
+        grid-template-columns: 1fr;
+    }
+
+    .attendance-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .nav a {
+
+        display: block;
+
+        margin: 10px 0;
+    }
+
+    .buttons {
+
+        flex-direction: column;
+    }
+
+    .btn {
+
+        text-align: center;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+    <h1>
+        Vandana Coaching Center
+    </h1>
+
+    <p>
+        👨‍🎓 Student Profile
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- ================= NAV ================= -->
+
+<div class="nav">
+
+    <a href="/">
+        🏠 Dashboard
+    </a>
+
+    <a href="/students">
+        👨‍🎓 Students
+    </a>
+
+    <a href="/attendance">
+        📋 Attendance
+    </a>
+
+    <a href="/reports">
+        📊 Reports
+    </a>
+
+</div>
+
+
+<!-- ================= PROFILE ================= -->
+
+<div class="profile-card">
+
+
+    <div class="profile-top">
+
+
+        <div class="avatar">
+
+            👨‍🎓
+
+        </div>
+
+
+        <div class="profile-name">
+
+            <h2>
+                {{ student['name'] }}
+            </h2>
+
+            <p>
+                Student ID: #{{ student['id'] }}
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= STUDENT DETAILS ================= -->
+
+    <div class="details">
+
+
+        <div class="detail-box">
+
+            <div class="detail-label">
+                Class
+            </div>
+
+            <div class="detail-value">
+
+                {{ student['class_name'] }}
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <div class="detail-label">
+                Roll Number
+            </div>
+
+            <div class="detail-value">
+
+                {{ student['roll_number'] or '-' }}
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <div class="detail-label">
+                Section
+            </div>
+
+            <div class="detail-value">
+
+                {{ student['section'] or '-' }}
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <div class="detail-label">
+                Parent / Guardian
+            </div>
+
+            <div class="detail-value">
+
+                {{ student['guardian_name'] or '-' }}
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <div class="detail-label">
+                Parent Mobile
+            </div>
+
+            <div class="detail-value">
+
+                {% if student['guardian_phone'] %}
+
+                    <a
+                        class="phone-link"
+                        href="tel:{{ student['guardian_phone'] }}"
+                    >
+                        📞 {{ student['guardian_phone'] }}
+                    </a>
+
+                {% else %}
+
+                    -
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= BUTTONS ================= -->
+
+    <div class="buttons">
+
+
+        <a
+            href="/edit_student/{{ student['id'] }}"
+            class="btn edit"
+        >
+            ✏️ Edit Student
+        </a>
+
+
+        <a
+            href="/student_report/{{ student['id'] }}"
+            class="btn report"
+        >
+            📊 Full Attendance Report
+        </a>
+
+
+        <a
+            href="/students"
+            class="btn back"
+        >
+            ← Back to Students
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- ================= ATTENDANCE SUMMARY ================= -->
+
+<div class="profile-card">
+
+
+    <h2 class="attendance-title">
+
+        📊 Attendance Summary
+
+    </h2>
+
+
+    <div class="attendance-grid">
+
+
+        <div class="attendance-card">
+
+            <h3>
+                Total Attendance
+            </h3>
+
+            <p class="total">
+                {{ total }}
+            </p>
+
+        </div>
+
+
+        <div class="attendance-card">
+
+            <h3>
+                Present
+            </h3>
+
+            <p class="present">
+                {{ present }}
+            </p>
+
+        </div>
+
+
+        <div class="attendance-card">
+
+            <h3>
+                Absent
+            </h3>
+
+            <p class="absent">
+                {{ absent }}
+            </p>
+
+        </div>
+
+
+        <div class="attendance-card">
+
+            <h3>
+                Attendance %
+            </h3>
+
+            <p class="percentage">
+                {{ percentage }}%
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+</body>
+
+</html>

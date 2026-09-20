@@ -8,30 +8,82 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Attendance Reports</title>
+    <title>Reports - Vandana Coaching Center</title>
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
             background: #f4f6f8;
-            padding: 25px;
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 22px;
+            text-align: center;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: auto;
+            padding: 25px;
         }
 
-        h1 {
-            text-align: center;
+        .nav {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            margin-right: 15px;
         }
 
         .card {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filter {
+            background: #2563eb;
+            color: white;
+        }
+
+        .export {
+            background: #16a34a;
+            color: white;
+        }
+
+        .reset {
+            background: #6b7280;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
         table {
@@ -51,30 +103,41 @@
             color: white;
         }
 
-        .present {
-            color: green;
-            font-weight: bold;
-        }
-
-        .absent {
-            color: red;
+        .percentage {
             font-weight: bold;
         }
 
         .view {
-            background: #2563eb;
+            background: #111827;
             color: white;
+            text-decoration: none;
             padding: 8px 12px;
             border-radius: 5px;
-            text-decoration: none;
         }
 
-        .back {
-            background: #555;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
+        @media (max-width: 700px) {
+
+            table {
+                font-size: 12px;
+            }
+
+            th,
+            td {
+                padding: 8px 4px;
+            }
+
+            input,
+            button,
+            .reset {
+                width: 100%;
+                margin-top: 8px;
+            }
+
+            .nav a {
+                display: block;
+                margin: 8px 0;
+            }
+
         }
 
     </style>
@@ -84,155 +147,261 @@
 
 <body>
 
-<div class="container">
+
+<div class="header">
 
     <h1>
         Vandana Coaching Center
     </h1>
 
-    <div class="card">
-
-        <a href="/" class="back">
-            ← Home
-        </a>
-
-        <h2>
-            📊 Attendance Report
-        </h2>
-
-
-        <table>
-
-            <tr>
-
-                <th>
-                    Roll No.
-                </th>
-
-                <th>
-                    Student
-                </th>
-
-                <th>
-                    Class
-                </th>
-
-                <th>
-                    Total
-                </th>
-
-                <th>
-                    Present
-                </th>
-
-                <th>
-                    Absent
-                </th>
-
-                <th>
-                    Percentage
-                </th>
-
-                <th>
-                    Details
-                </th>
-
-            </tr>
-
-
-            {% for report in reports %}
-
-            <tr>
-
-                <td>
-                    {{ report["roll_number"] }}
-                </td>
-
-                <td>
-                    {{ report["name"] }}
-                </td>
-
-                <td>
-                    {{ report["class_name"] }}
-                </td>
-
-                <td>
-                    {{ report["total"] }}
-                </td>
-
-                <td class="present">
-                    {{ report["present"] }}
-                </td>
-
-                <td class="absent">
-                    {{ report["absent"] }}
-                </td>
-
-                <td>
-                    {{ report["percentage"] }}%
-                </td>
-
-                <td>
-
-                    <a
-                        href="/student_report/{{ report['id'] }}"
-                        class="view"
-                    >
-                        View
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% else %}
-
-            <tr>
-
-                <td colspan="8">
-                    No students available.
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </table>
-
-    </div>
+    <p>
+        Attendance Reports
+    </p>
 
 </div>
 
-</body>
-<div style="
-    background:#2563eb;
-    color:white;
-    padding:15px;
-    text-align:center;
-">
 
-    <h2>
-        Vandana Coaching Center
-    </h2>
+<div class="container">
 
-    <div>
 
-        <a href="/"
-           style="color:white;margin:10px;">
+    <!-- NAVIGATION -->
+
+    <div class="nav">
+
+        <a href="/">
             🏠 Dashboard
         </a>
 
-        <a href="/students"
-           style="color:white;margin:10px;">
+        <a href="/students">
             👨‍🎓 Students
         </a>
 
-        <a href="/attendance"
-           style="color:white;margin:10px;">
+        <a href="/attendance">
             📋 Attendance
         </a>
 
     </div>
 
+
+    <!-- MONTH FILTER -->
+
+    <div class="card">
+
+        <h2>
+            📅 Monthly Report
+        </h2>
+
+        <form
+            method="GET"
+            action="/reports"
+        >
+
+            <label>
+                Select Month:
+            </label>
+
+            <input
+                type="month"
+                name="month"
+                value="{{ selected_month }}"
+            >
+
+            <button
+                type="submit"
+                class="filter"
+            >
+                🔍 Filter
+            </button>
+
+            <a
+                href="/reports"
+                class="reset"
+            >
+                Reset
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <!-- CSV EXPORT -->
+
+    <div class="card">
+
+        <h2>
+            📥 Export Attendance
+        </h2>
+
+        <p>
+            Attendance data ko CSV file mein download karein.
+        </p>
+
+        {% if selected_month %}
+
+        <a
+            href="/export_csv?month={{ selected_month }}"
+        >
+
+            <button class="export">
+                📥 Download {{ selected_month }} CSV
+            </button>
+
+        </a>
+
+        {% else %}
+
+        <a href="/export_csv">
+
+            <button class="export">
+                📥 Download All Attendance
+            </button>
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- REPORT TABLE -->
+
+    <div class="card">
+
+        <h2>
+            📊 Student Attendance Report
+        </h2>
+
+        {% if selected_month %}
+
+        <p>
+            Showing report for:
+            <strong>
+                {{ selected_month }}
+            </strong>
+        </p>
+
+        {% else %}
+
+        <p>
+            Showing attendance for all recorded dates.
+        </p>
+
+        {% endif %}
+
+
+        <div style="overflow-x:auto;">
+
+            <table>
+
+                <tr>
+
+                    <th>
+                        Roll
+                    </th>
+
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Class
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Present
+                    </th>
+
+                    <th>
+                        Absent
+                    </th>
+
+                    <th>
+                        Percentage
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+
+                {% for report in reports %}
+
+                <tr>
+
+                    <td>
+                        {{ report["roll_number"] }}
+                    </td>
+
+                    <td>
+                        {{ report["name"] }}
+                    </td>
+
+                    <td>
+                        {{ report["class_name"] }}
+                    </td>
+
+                    <td>
+                        {{ report["total"] }}
+                    </td>
+
+                    <td>
+                        {{ report["present"] }}
+                    </td>
+
+                    <td>
+                        {{ report["absent"] }}
+                    </td>
+
+                    <td class="percentage">
+
+                        {{ report["percentage"] }}%
+
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="/student_report/{{ report['id'] }}"
+                            class="view"
+                        >
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="8">
+
+                        No students found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </div>
+
+
 </div>
+
+
+</body>
+
 </html>
