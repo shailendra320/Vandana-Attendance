@@ -1,451 +1,614 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dashboard - Vandana Coaching Center</title>
+    <meta charset="UTF-8">
 
-<style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-*{
-    box-sizing:border-box;
-}
+    <title>Dashboard - Vandana Coaching Center</title>
 
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#f3f6fb;
-    color:#1f2937;
-}
+    <!-- CSS FILE -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-/* HEADER */
-
-.header{
-    background:linear-gradient(135deg,#2563eb,#4f46e5);
-    color:white;
-    padding:25px 20px;
-}
-
-.header-content{
-    max-width:1200px;
-    margin:auto;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
-}
-
-.header h1{
-    margin:0;
-    font-size:28px;
-}
-
-.header p{
-    margin:7px 0 0;
-    opacity:.9;
-}
-
-.date-box{
-    background:rgba(255,255,255,.15);
-    padding:12px 18px;
-    border-radius:10px;
-    text-align:center;
-}
-
-/* CONTAINER */
-
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:25px;
-}
-
-/* NAV */
-
-.nav{
-    background:white;
-    padding:15px 20px;
-    border-radius:12px;
-    margin-bottom:25px;
-    box-shadow:0 3px 12px rgba(0,0,0,.06);
-}
-
-.nav a{
-    text-decoration:none;
-    color:#374151;
-    margin-right:22px;
-    font-weight:bold;
-}
-
-.nav a:hover{
-    color:#2563eb;
-}
-
-/* WELCOME */
-
-.welcome{
-    margin-bottom:25px;
-}
-
-.welcome h2{
-    margin:0 0 7px;
-}
-
-.welcome p{
-    margin:0;
-    color:#6b7280;
-}
-
-/* STATS */
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-    margin-bottom:30px;
-}
-
-.stat-card{
-    background:white;
-    padding:22px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,.06);
-    border-left:5px solid #2563eb;
-}
-
-.stat-icon{
-    font-size:30px;
-}
-
-.stat-card h3{
-    margin:12px 0 5px;
-    font-size:30px;
-}
-
-.stat-card p{
-    margin:0;
-    color:#6b7280;
-}
-
-.present{
-    border-left-color:#16a34a;
-}
-
-.absent{
-    border-left-color:#dc2626;
-}
-
-.percentage{
-    border-left-color:#9333ea;
-}
-
-/* QUICK ACTION */
-
-.section-title{
-    margin-bottom:15px;
-}
-
-.actions{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    margin-bottom:30px;
-}
-
-.action-card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,.06);
-    text-decoration:none;
-    color:#1f2937;
-    transition:.2s;
-}
-
-.action-card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 7px 20px rgba(0,0,0,.1);
-}
-
-.action-icon{
-    font-size:38px;
-}
-
-.action-card h3{
-    margin:12px 0 7px;
-}
-
-.action-card p{
-    color:#6b7280;
-    margin-bottom:18px;
-}
-
-.action-btn{
-    display:inline-block;
-    padding:10px 16px;
-    background:#2563eb;
-    color:white;
-    border-radius:7px;
-    font-size:14px;
-}
-
-/* INFO */
-
-.info{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,.06);
-}
-
-.info h2{
-    margin-top:0;
-}
-
-.info ul{
-    line-height:2;
-    color:#4b5563;
-}
-
-/* MOBILE */
-
-@media(max-width:800px){
-
-    .header-content{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .actions{
-        grid-template-columns:1fr;
-    }
-
-}
-
-@media(max-width:500px){
-
-    .container{
-        padding:15px;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .nav a{
-        display:block;
-        margin:10px 0;
-    }
-
-    .header h1{
-        font-size:23px;
-    }
-
-}
-
-</style>
 </head>
+
 
 <body>
 
-<!-- HEADER -->
 
-<div class="header">
+    <!-- HEADER -->
 
-    <div class="header-content">
+    <div class="header">
 
-        <div>
-            <h1>Vandana Coaching Center</h1>
-            <p>Student Attendance Management System</p>
-        </div>
+        <div class="header-content">
 
-        <div class="date-box">
-            📅 Today<br>
-            <strong>{{ today }}</strong>
-        </div>
+            <div>
 
-    </div>
+                <h1>
+                    Vandana Coaching Center
+                </h1>
 
-</div>
+                <p>
+                    Student Attendance Management System
+                </p>
 
-
-<div class="container">
-
-    <!-- NAVIGATION -->
-
-    <div class="nav">
-
-        <a href="/">🏠 Dashboard</a>
-
-        <a href="/students">👨‍🎓 Students</a>
-
-        <a href="/attendance">📋 Attendance</a>
-
-        <a href="/reports">📊 Reports</a>
-
-    </div>
+            </div>
 
 
-    <!-- WELCOME -->
+            <div class="date-box">
 
-    <div class="welcome">
+                📅 Today
 
-        <h2>Welcome to Dashboard 👋</h2>
+                <br>
 
-        <p>
-            Yahan se aap students aur daily attendance ko easily manage kar sakte hain.
-        </p>
+                <strong>
+                    {{ today }}
+                </strong>
 
-    </div>
-
-
-    <!-- STATISTICS -->
-
-    <div class="stats">
-
-        <div class="stat-card">
-
-            <div class="stat-icon">👨‍🎓</div>
-
-            <h3>{{ total_students }}</h3>
-
-            <p>Total Students</p>
-
-        </div>
-
-
-        <div class="stat-card present">
-
-            <div class="stat-icon">✅</div>
-
-            <h3>{{ present }}</h3>
-
-            <p>Today's Present</p>
-
-        </div>
-
-
-        <div class="stat-card absent">
-
-            <div class="stat-icon">❌</div>
-
-            <h3>{{ absent }}</h3>
-
-            <p>Today's Absent</p>
-
-        </div>
-
-
-        <div class="stat-card percentage">
-
-            <div class="stat-icon">📊</div>
-
-            <h3>{{ percentage }}%</h3>
-
-            <p>Today's Attendance</p>
+            </div>
 
         </div>
 
     </div>
 
 
-    <!-- QUICK ACTIONS -->
 
-    <h2 class="section-title">⚡ Quick Actions</h2>
+    <div class="container">
 
-    <div class="actions">
 
-        <a href="/students" class="action-card">
+        <!-- NAVIGATION -->
 
-            <div class="action-icon">👨‍🎓</div>
+        <div class="nav">
 
-            <h3>Manage Students</h3>
+            <a href="/">
+                🏠 Dashboard
+            </a>
+
+            <a href="/students">
+                👨‍🎓 Students
+            </a>
+
+            <a href="/attendance">
+                📋 Attendance
+            </a>
+
+            <a href="/reports">
+                📊 Reports
+            </a>
+
+
+            <!-- ADMIN LOGIN / LOGOUT -->
+
+            {% if session.get("admin_logged_in") %}
+
+                <a href="/logout">
+                    🔒 Logout
+                </a>
+
+            {% else %}
+
+                <a href="/login">
+                    🔑 Admin Login
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+
+        WELCOME
+
+        <div class="welcome">
+
+            <h2>
+                Welcome to Dashboard 👋
+            </h2>
 
             <p>
-                Students add, edit, search aur delete karein.
+                Vandana Coaching Center ki attendance yahan se manage karein.
             </p>
 
-            <span class="action-btn">
-                Open Students →
-            </span>
-
-        </a>
+        </div>
 
 
-        <a href="/attendance" class="action-card">
 
-            <div class="action-icon">📋</div>
+        <!-- ADMIN STATUS -->
 
-            <h3>Take Attendance</h3>
+        <div class="card">
+
+            {% if session.get("admin_logged_in") %}
+
+                <h3>
+                    🔐 Admin Mode Active
+                </h3>
+
+                <p>
+                    Aap admin ke roop mein logged in hain.
+                    Ab aap students aur attendance manage kar sakte hain.
+                </p>
+
+            {% else %}
+
+                <h3>
+                    👁️ View Only Mode
+                </h3>
+
+                <p>
+                    Website public viewing mode mein hai.
+                    Students aur attendance ko edit karne ke liye Admin Login karein.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    {{ total_students }}
+                </h3>
+
+                <p>
+                    Total Students
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card present">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <h3>
+                    {{ present_today }}
+                </h3>
+
+                <p>
+                    Today's Present
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card absent">
+
+                <div class="stat-icon">
+                    ❌
+                </div>
+
+                <h3>
+                    {{ absent_today }}
+                </h3>
+
+                <p>
+                    Today's Absent
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card percentage">
+
+                <div class="stat-icon">
+                    📊
+                </div>
+
+                <h3>
+                    {{ attendance_percentage }}%
+                </h3>
+
+                <p>
+                    Today's Attendance
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- QUICK ACTIONS -->
+
+        <h2 class="section-title">
+            ⚡ Quick Actions
+        </h2>
+
+
+
+        <div class="actions">
+
+
+            <a href="/students" class="action-card">
+
+                <div class="action-icon">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    Manage Students
+                </h3>
+
+                <p>
+
+                    {% if session.get("admin_logged_in") %}
+
+                        Students add, edit, search aur delete karein.
+
+                    {% else %}
+
+                        Students ki information dekhein.
+
+                    {% endif %}
+
+                </p>
+
+                <span class="action-btn">
+                    Open Students →
+                </span>
+
+            </a>
+
+
+
+            <a href="/attendance" class="action-card">
+
+                <div class="action-icon">
+                    📋
+                </div>
+
+                <h3>
+                    Take Attendance
+                </h3>
+
+                <p>
+
+                    {% if session.get("admin_logged_in") %}
+
+                        Students ki daily Present/Absent attendance lagayein.
+
+                    {% else %}
+
+                        Attendance records dekhein.
+
+                    {% endif %}
+
+                </p>
+
+                <span class="action-btn">
+                    Open Attendance →
+                </span>
+
+            </a>
+
+
+
+            <a href="/reports" class="action-card">
+
+                <div class="action-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Attendance Reports
+                </h3>
+
+                <p>
+                    Monthly report dekhein aur CSV download karein.
+                </p>
+
+                <span class="action-btn">
+                    View Reports →
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+
+        <!-- CLASS-WISE ATTENDANCE -->
+
+        <div class="card">
+
+            <h2>
+                🏫 Class-wise Attendance
+            </h2>
 
             <p>
-                Aaj ke students ki Present/Absent attendance lagayein.
+                Aaj har class mein attendance ka status.
             </p>
 
-            <span class="action-btn">
-                Take Attendance →
-            </span>
-
-        </a>
 
 
-        <a href="/reports" class="action-card">
+            <div class="table-wrapper">
 
-            <div class="action-icon">📊</div>
+                <table>
 
-            <h3>Attendance Reports</h3>
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Present
+                            </th>
+
+                            <th>
+                                Absent
+                            </th>
+
+                            <th>
+                                Attendance
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        {% if class_attendance %}
+
+
+                            {% for item in class_attendance %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        {{ item.class_name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+                                    {{ item.total }}
+                                </td>
+
+
+                                <td class="present-badge">
+                                    {{ item.present }}
+                                </td>
+
+
+                                <td class="absent-badge">
+                                    {{ item.absent }}
+                                </td>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ item.percentage }}%
+                                    </strong>
+
+
+                                    <div class="progress">
+
+                                        <div
+                                            class="progress-bar"
+                                            style="width: {{ item.percentage }}%;">
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+
+                        {% else %}
+
+
+                            <tr>
+
+                                <td colspan="5">
+                                    Aaj ki attendance abhi record nahi hui.
+                                </td>
+
+                            </tr>
+
+
+                        {% endif %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RECENT ATTENDANCE -->
+
+        <div class="card">
+
+            <h2>
+                🕒 Recent Attendance Activity
+            </h2>
 
             <p>
-                Monthly report dekhein aur CSV download karein.
+                Latest attendance records.
             </p>
 
-            <span class="action-btn">
-                View Reports →
-            </span>
 
-        </a>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Class
+                            </th>
+
+                            <th>
+                                Roll
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        {% if recent_attendance %}
+
+
+                            {% for item in recent_attendance %}
+
+                            <tr>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ item.name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+                                    {{ item.class_name }}
+                                </td>
+
+
+                                <td>
+                                    {{ item.roll_number }}
+                                </td>
+
+
+                                <td>
+                                    {{ item.attendance_date }}
+                                </td>
+
+
+                                <td>
+
+
+                                    {% if item.status == "Present" %}
+
+                                        <span class="status status-present">
+                                            ✅ Present
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-absent">
+                                            ❌ Absent
+                                        </span>
+
+                                    {% endif %}
+
+
+                                </td>
+
+
+                            </tr>
+
+                            {% endfor %}
+
+
+                        {% else %}
+
+
+                            <tr>
+
+                                <td colspan="5">
+                                    Abhi attendance records nahi hain.
+                                </td>
+
+                            </tr>
+
+
+                        {% endif %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            © 2026 Vandana Coaching Center
+
+            <br>
+
+            Student Attendance Management System
+
+        </div>
+
 
     </div>
 
-
-    <!-- INFORMATION -->
-
-    <div class="info">
-
-        <h2>📌 How to use</h2>
-
-        <ul>
-
-            <li>
-                <strong>Students</strong> section mein naye students add karein.
-            </li>
-
-            <li>
-                <strong>Attendance</strong> section mein daily Present/Absent mark karein.
-            </li>
-
-            <li>
-                <strong>Reports</strong> section se monthly attendance check karein.
-            </li>
-
-            <li>
-                Student ke <strong>Profile</strong> mein uski complete information aur attendance dekhein.
-            </li>
-
-            <li>
-                Reports ko <strong>CSV file</strong> mein download bhi kar sakte hain.
-            </li>
-
-        </ul>
-
-    </div>
-
-</div>
 
 </body>
+
 </html>
+```
