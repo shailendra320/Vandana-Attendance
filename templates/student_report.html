@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Attendance</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 15px;
+        }
+
+        .number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        .back {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <a href="/reports" class="back">
+            ← Back to Reports
+        </a>
+
+        <h1>
+            {{ student["name"] }}
+        </h1>
+
+        <p style="text-align:center;">
+            Class: {{ student["class_name"] }}
+            |
+            Roll No: {{ student["roll_number"] }}
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            📊 Attendance Summary
+        </h2>
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="number">
+                    {{ total }}
+                </div>
+
+                <div>
+                    Total Classes
+                </div>
+
+            </div>
+
+
+            <div class="stat green">
+
+                <div class="number">
+                    {{ present }}
+                </div>
+
+                <div>
+                    Present
+                </div>
+
+            </div>
+
+
+            <div class="stat red">
+
+                <div class="number">
+                    {{ absent }}
+                </div>
+
+                <div>
+                    Absent
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="number">
+                    {{ percentage }}%
+                </div>
+
+                <div>
+                    Attendance
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            📅 Attendance History
+        </h2>
+
+        <table>
+
+            <tr>
+
+                <th>
+                    Date
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+            </tr>
+
+
+            {% for record in attendance_records %}
+
+            <tr>
+
+                <td>
+                    {{ record["attendance_date"] }}
+                </td>
+
+                <td>
+
+                    {% if record["status"] == "Present" %}
+
+                        <span class="present">
+                            ✅ Present
+                        </span>
+
+                    {% else %}
+
+                        <span class="absent">
+                            ❌ Absent
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="2">
+                    No attendance recorded.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+<div style="
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    text-align:center;
+">
+
+    <h2>
+        Vandana Coaching Center
+    </h2>
+
+    <div>
+
+        <a href="/"
+           style="color:white;margin:10px;">
+            🏠 Dashboard
+        </a>
+
+        <a href="/students"
+           style="color:white;margin:10px;">
+            👨‍🎓 Students
+        </a>
+
+        <a href="/reports"
+           style="color:white;margin:10px;">
+            📊 Reports
+        </a>
+
+    </div>
+
+</div>
+</html>

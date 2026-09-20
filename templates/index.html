@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Vandana Coaching Center
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #1760f1;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            margin-bottom: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        .date {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow:
+                0 3px 10px
+                rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .number {
+            font-size: 35px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .blue {
+            color: #114dcf;
+        }
+
+        .orange {
+            color: #f59e0b;
+        }
+
+        .menu {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .menu a {
+            text-decoration: none;
+        }
+
+        .menu button {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow:
+                0 3px 10px
+                rgba(0,0,0,0.08);
+        }
+
+        .menu button:hover {
+            background: #eaf0ff;
+        }
+
+        @media (max-width: 800px) {
+
+            .cards {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .menu {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .cards {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        Vandana Coaching Center
+    </h1>
+
+    <p>
+        Student Attendance Management System
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <div class="date">
+
+        📅 Today's Date:
+
+        <strong>
+            {{ today }}
+        </strong>
+
+    </div>
+
+
+    <!-- DASHBOARD CARDS -->
+
+    <div class="cards">
+
+
+        <!-- TOTAL STUDENTS -->
+
+        <div class="card">
+
+            <h3>
+                👨‍🎓 Total Students
+            </h3>
+
+            <div class="number blue">
+                {{ total_students }}
+            </div>
+
+        </div>
+
+
+        <!-- PRESENT -->
+
+        <div class="card">
+
+            <h3>
+                ✅ Present Today
+            </h3>
+
+            <div class="number green">
+                {{ present_today }}
+            </div>
+
+        </div>
+
+
+        <!-- ABSENT -->
+
+        <div class="card">
+
+            <h3>
+                ❌ Absent Today
+            </h3>
+
+            <div class="number red">
+                {{ absent_today }}
+            </div>
+
+        </div>
+
+
+        <!-- PERCENTAGE -->
+
+        <div class="card">
+
+            <h3>
+                📊 Attendance
+            </h3>
+
+            <div class="number orange">
+                {{ attendance_percentage }}%
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <div class="menu">
+
+
+        <a href="/students">
+
+            <button>
+                👨‍🎓 Manage Students
+            </button>
+
+        </a>
+
+
+        <a href="/attendance">
+
+            <button>
+                📋 Daily Attendance
+            </button>
+
+        </a>
+
+
+        <a href="/reports">
+
+            <button>
+                📊 Attendance Reports
+            </button>
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

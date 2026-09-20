@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Daily Attendance</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .date-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .save {
+            background: #2563eb;
+            color: white;
+            margin-top: 20px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .back {
+            background: #555;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .status-option {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>Vandana Coaching Center</h1>
+
+    <div class="card">
+
+        <a href="/">
+            <button class="back">
+                ← Home
+            </button>
+        </a>
+
+        <h2>📋 Daily Attendance</h2>
+
+
+        <!-- DATE -->
+
+        <div class="date-box">
+
+            <form method="GET" action="/attendance">
+
+                <label>
+                    Select Date:
+                </label>
+
+                <input
+                    type="date"
+                    name="date"
+                    value="{{ selected_date }}"
+                    onchange="this.form.submit()"
+                >
+
+            </form>
+
+        </div>
+
+
+        <!-- ATTENDANCE FORM -->
+
+        <form
+            method="POST"
+            action="/save_attendance"
+        >
+
+            <input
+                type="hidden"
+                name="attendance_date"
+                value="{{ selected_date }}"
+            >
+
+
+            <table>
+
+                <tr>
+
+                    <th>
+                        Roll No.
+                    </th>
+
+                    <th>
+                        Student Name
+                    </th>
+
+                    <th>
+                        Class
+                    </th>
+
+                    <th>
+                        Attendance
+                    </th>
+
+                </tr>
+
+
+                {% for student in students %}
+
+                <tr>
+
+                    <td>
+                        {{ student["roll_number"] }}
+                    </td>
+
+                    <td>
+                        {{ student["name"] }}
+                    </td>
+
+                    <td>
+                        {{ student["class_name"] }}
+                    </td>
+
+                    <td>
+
+                        <div class="status-option">
+
+                            <label class="present">
+
+                                <input
+                                    type="radio"
+                                    name="status_{{ student['id'] }}"
+                                    value="Present"
+
+                                    {% if attendance_dict.get(student["id"]) == "Present" %}
+                                    checked
+                                    {% endif %}
+                                >
+
+                                ✅ Present
+
+                            </label>
+
+
+                            <label class="absent">
+
+                                <input
+                                    type="radio"
+                                    name="status_{{ student['id'] }}"
+                                    value="Absent"
+
+                                    {% if attendance_dict.get(student["id"]) == "Absent" %}
+                                    checked
+                                    {% endif %}
+                                >
+
+                                ❌ Absent
+
+                            </label>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No students found.
+
+                        <br><br>
+
+                        First add students.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+
+            {% if students %}
+
+            <button
+                type="submit"
+                class="save"
+            >
+                💾 Save Attendance
+            </button>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+<div style="
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    text-align:center;
+">
+
+    <h2>
+        Vandana Coaching Center
+    </h2>
+
+    <div>
+
+        <a href="/"
+           style="color:white;margin:10px;">
+            🏠 Dashboard
+        </a>
+
+        <a href="/students"
+           style="color:white;margin:10px;">
+            👨‍🎓 Students
+        </a>
+
+        <a href="/reports"
+           style="color:white;margin:10px;">
+            📊 Reports
+        </a>
+
+    </div>
+
+</div>
+</html>

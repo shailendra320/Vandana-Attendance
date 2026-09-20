@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Students - Vandana Coaching Center</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 22px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        input,
+        select {
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .add {
+            background: #2563eb;
+            color: white;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+        }
+
+        .search {
+            background: #111827;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .top-links {
+            margin-bottom: 20px;
+        }
+
+        .top-links a {
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 700px) {
+
+            table {
+                font-size: 13px;
+            }
+
+            input,
+            select {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 5px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        Vandana Coaching Center
+    </h1>
+
+    <p>
+        Student Management
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <div class="top-links">
+
+        <a href="/">
+            🏠 Dashboard
+        </a>
+
+        |
+
+        <a href="/attendance">
+            📋 Attendance
+        </a>
+
+        |
+
+        <a href="/reports">
+            📊 Reports
+        </a>
+
+    </div>
+
+
+    <!-- ADD STUDENT -->
+
+    <div class="card">
+
+        <h2>
+            ➕ Add New Student
+        </h2>
+
+        <form
+            action="/add_student"
+            method="POST"
+        >
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Student Name"
+                required
+            >
+
+            <input
+                type="text"
+                name="class_name"
+                placeholder="Class"
+                required
+            >
+
+            <input
+                type="text"
+                name="roll_number"
+                placeholder="Roll Number"
+            >
+
+            <button
+                type="submit"
+                class="add"
+            >
+                Add Student
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="card">
+
+        <h2>
+            🔎 Search Students
+        </h2>
+
+        <form
+            method="GET"
+            action="/students"
+        >
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Name or Roll Number"
+            >
+
+
+            <select name="class_name">
+
+                <option value="">
+                    All Classes
+                </option>
+
+                {% for class_item in classes %}
+
+                <option
+                    value="{{ class_item['class_name'] }}"
+                    {% if selected_class == class_item['class_name'] %}
+                    selected
+                    {% endif %}
+                >
+
+                    {{ class_item['class_name'] }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="search"
+            >
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- STUDENT LIST -->
+
+    <div class="card">
+
+        <h2>
+            👨‍🎓 Student List
+        </h2>
+
+        <table>
+
+            <tr>
+
+                <th>
+                    Roll
+                </th>
+
+                <th>
+                    Name
+                </th>
+
+                <th>
+                    Class
+                </th>
+
+                <th>
+                    Action
+                </th>
+
+            </tr>
+
+
+            {% for student in students %}
+
+            <tr>
+
+                <td>
+                    {{ student["roll_number"] }}
+                </td>
+
+                <td>
+                    {{ student["name"] }}
+                </td>
+
+                <td>
+                    {{ student["class_name"] }}
+                </td>
+
+                <td>
+<a href="/edit_student/{{ student['id'] }}">
+
+    <button
+        style="
+            background:#f59e0b;
+            color:white;
+        "
+    >
+        ✏️ Edit
+    </button>
+
+</a>
+                    <a
+                        href="/delete_student/{{ student['id'] }}"
+                        onclick="return confirm('Delete this student?')"
+                    >
+
+                        <button class="delete">
+                            Delete
+                        </button>
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="4">
+                    No students found.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

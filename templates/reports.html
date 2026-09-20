@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Reports</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        .view {
+            background: #2563eb;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .back {
+            background: #555;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>
+        Vandana Coaching Center
+    </h1>
+
+    <div class="card">
+
+        <a href="/" class="back">
+            ← Home
+        </a>
+
+        <h2>
+            📊 Attendance Report
+        </h2>
+
+
+        <table>
+
+            <tr>
+
+                <th>
+                    Roll No.
+                </th>
+
+                <th>
+                    Student
+                </th>
+
+                <th>
+                    Class
+                </th>
+
+                <th>
+                    Total
+                </th>
+
+                <th>
+                    Present
+                </th>
+
+                <th>
+                    Absent
+                </th>
+
+                <th>
+                    Percentage
+                </th>
+
+                <th>
+                    Details
+                </th>
+
+            </tr>
+
+
+            {% for report in reports %}
+
+            <tr>
+
+                <td>
+                    {{ report["roll_number"] }}
+                </td>
+
+                <td>
+                    {{ report["name"] }}
+                </td>
+
+                <td>
+                    {{ report["class_name"] }}
+                </td>
+
+                <td>
+                    {{ report["total"] }}
+                </td>
+
+                <td class="present">
+                    {{ report["present"] }}
+                </td>
+
+                <td class="absent">
+                    {{ report["absent"] }}
+                </td>
+
+                <td>
+                    {{ report["percentage"] }}%
+                </td>
+
+                <td>
+
+                    <a
+                        href="/student_report/{{ report['id'] }}"
+                        class="view"
+                    >
+                        View
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="8">
+                    No students available.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+<div style="
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    text-align:center;
+">
+
+    <h2>
+        Vandana Coaching Center
+    </h2>
+
+    <div>
+
+        <a href="/"
+           style="color:white;margin:10px;">
+            🏠 Dashboard
+        </a>
+
+        <a href="/students"
+           style="color:white;margin:10px;">
+            👨‍🎓 Students
+        </a>
+
+        <a href="/attendance"
+           style="color:white;margin:10px;">
+            📋 Attendance
+        </a>
+
+    </div>
+
+</div>
+</html>
