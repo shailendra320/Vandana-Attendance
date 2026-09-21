@@ -14,8 +14,9 @@ import csv
 import io
 import os
 from functools import wraps
+
 from werkzeug.security import check_password_hash
-from datetime import datetime
+
 
 # =====================================================
 # FLASK APP
@@ -40,15 +41,29 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 
 # =====================================================
-# ADMIN AUTHENTICATION
+# DATABASE CONNECTION
 # =====================================================
 
-def admin_required(view_func):
+def get_db_connection():
+
+    conn = sqlite3.connect(DATABASE)
+
+    conn.row_factory = sqlite3.Row
+
+    return conn
+
+
+# =====================================================
+# LOGIN REQUIRED
+# =====================================================
+
+def login_required(view_func):
 
     @wraps(view_func)
     def wrapped_view(*args, **kwargs):
 
-        if not session.get("admin_logged_in"):
+        if not session.get("user_id"):
+
             return redirect(
                 url_for(
                     "login",
@@ -62,16 +77,105 @@ def admin_required(view_func):
 
 
 # =====================================================
-# DATABASE CONNECTION
+# ROLE REQUIRED
 # =====================================================
 
-def get_db_connection():
+def role_required(*allowed_roles):
 
-    conn = sqlite3.connect(DATABASE)
+    def decorator(view_func):
 
-    conn.row_factory = sqlite3.Row
+        @wraps(view_func)
+        def wrapped_view(*args, **kwargs):
 
-    return conn
+            if not session.get("user_id"):
+
+                return redirect(
+                    url_for(
+                        "login",
+                        next=request.path
+                    )
+                )
+
+            user_role = session.get("role")
+
+            if user_role not in allowed_roles:
+
+                return """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Access Denied</title>
+                    <meta name="viewport"
+                          content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body {
+                            font-family: Arial;
+                            background: #f4f6f8;
+                            text-align: center;
+                            padding: 60px 20px;
+                        }
+
+                        .box {
+                            background: white;
+                            max-width: 500px;
+                            margin: auto;
+                            padding: 35px;
+                            border-radius: 15px;
+                            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                        }
+
+                        a {
+                            display: inline-block;
+                            margin-top: 20px;
+                            padding: 12px 20px;
+                            background: #2563eb;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 8px;
+                        }
+                    </style>
+                </head>
+
+                <body>
+
+                    <div class="box">
+
+                        <h1>🚫 Access Denied</h1>
+
+                        <p>
+                            Aapko is page ki permission nahi hai.
+                        </p>
+
+                        <a href="/dashboard">
+                            Go to Dashboard
+                        </a>
+
+                    </div>
+
+                </body>
+                </html>
+                """, 403
+
+            return view_func(*args, **kwargs)
+
+        return wrapped_view
+
+    return decorator
+
+
+# =====================================================
+# ROLE SHORTCUTS
+# =====================================================
+
+def hod_required(view_func):
+    return role_required("hod")(view_func)
+
+
+def teacher_or_hod_required(view_func):
+    return role_required(
+        "hod",
+        "teacher"
+    )(view_func)
 
 
 # =====================================================
@@ -115,13 +219,10 @@ def init_database():
     # -------------------------------------------------
 
     columns = [
-
         row[1]
-
         for row in cursor.execute(
             "PRAGMA table_info(students)"
         ).fetchall()
-
     ]
 
 
@@ -172,7 +273,7 @@ def init_database():
 
 
     # -------------------------------------------------
-    # ADMINS TABLE
+    # OLD ADMINS TABLE
     # -------------------------------------------------
 
     cursor.execute("""
@@ -188,16 +289,84 @@ def init_database():
     """)
 
 
+    # -------------------------------------------------
+    # USERS TABLE
+    # -------------------------------------------------
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            username TEXT UNIQUE NOT NULL,
+
+            password_hash TEXT NOT NULL,
+
+            role TEXT NOT NULL
+                CHECK(role IN ('hod', 'teacher', 'student')),
+
+            student_id INTEGER,
+
+            FOREIGN KEY(student_id)
+            REFERENCES students(id)
+
+        )
+    """)
+
+
+    # -------------------------------------------------
+    # MIGRATE OLD ADMIN ACCOUNTS TO HOD
+    # -------------------------------------------------
+
+    old_admins = cursor.execute("""
+        SELECT
+            username,
+            password_hash
+        FROM admins
+    """).fetchall()
+
+
+    for admin in old_admins:
+
+        existing_user = cursor.execute("""
+            SELECT id
+            FROM users
+            WHERE username = ?
+        """, (
+            admin[0],
+        )).fetchone()
+
+
+        if not existing_user:
+
+            cursor.execute("""
+                INSERT INTO users
+                (
+                    username,
+                    password_hash,
+                    role,
+                    student_id
+                )
+                VALUES (?, ?, 'hod', NULL)
+            """, (
+                admin[0],
+                admin[1]
+            ))
+
+
     conn.commit()
 
     conn.close()
 
 
 # =====================================================
-# ADMIN LOGIN
+# LOGIN
 # =====================================================
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
 def login():
 
     if request.method == "POST":
@@ -215,41 +384,71 @@ def login():
 
         conn = get_db_connection()
 
-        admin = conn.execute("""
-            SELECT *
-            FROM admins
+
+        user = conn.execute("""
+            SELECT
+                id,
+                username,
+                password_hash,
+                role,
+                student_id
+            FROM users
             WHERE username = ?
         """, (
             username,
         )).fetchone()
 
+
         conn.close()
 
 
-        if admin and check_password_hash(
-            admin["password_hash"],
+        if user and check_password_hash(
+            user["password_hash"],
             password
         ):
 
             session.clear()
 
-            session["admin_logged_in"] = True
+            session["user_id"] = user["id"]
 
-            session["admin_username"] = username
+            session["username"] = user["username"]
 
+            session["role"] = user["role"]
 
-            next_page = request.args.get(
-                "next"
-            )
-
-
-            if next_page and next_page.startswith("/"):
-                return redirect(next_page)
+            session["student_id"] = user["student_id"]
 
 
-            return redirect(
-                url_for("home")
-            )
+            # -----------------------------------------
+            # HOD
+            # -----------------------------------------
+
+            if user["role"] == "hod":
+
+                return redirect(
+                    url_for("dashboard")
+                )
+
+
+            # -----------------------------------------
+            # TEACHER
+            # -----------------------------------------
+
+            if user["role"] == "teacher":
+
+                return redirect(
+                    url_for("dashboard")
+                )
+
+
+            # -----------------------------------------
+            # STUDENT
+            # -----------------------------------------
+
+            if user["role"] == "student":
+
+                return redirect(
+                    url_for("student_portal")
+                )
 
 
         return render_template(
@@ -264,7 +463,7 @@ def login():
 
 
 # =====================================================
-# ADMIN LOGOUT
+# LOGOUT
 # =====================================================
 
 @app.route("/logout")
@@ -273,62 +472,18 @@ def logout():
     session.clear()
 
     return redirect(
-        url_for("home")
+        url_for("login")
     )
 
 
 # =====================================================
 # DASHBOARD
+# HOD + TEACHER
 # =====================================================
+
 @app.route("/dashboard")
+@teacher_or_hod_required
 def dashboard():
-    conn = get_db_connection()
-
-    total_students = conn.execute(
-        "SELECT COUNT(*) FROM students"
-    ).fetchone()[0]
-
-    today = datetime.now().strftime("%Y-%m-%d")
-
-    present_today = conn.execute(
-        "SELECT COUNT(*) FROM attendance WHERE date = ? AND status = 'Present'",
-        (today,)
-    ).fetchone()[0]
-
-    absent_today = conn.execute(
-        "SELECT COUNT(*) FROM attendance WHERE date = ? AND status = 'Absent'",
-        (today,)
-    ).fetchone()[0]
-
-    total_today = present_today + absent_today
-
-    if total_today > 0:
-        attendance_percentage = round(
-            (present_today / total_today) * 100, 1
-        )
-    else:
-        attendance_percentage = 0
-
-    recent_attendance = conn.execute("""
-        SELECT attendance.date, students.name, attendance.status
-        FROM attendance
-        JOIN students ON students.id = attendance.student_id
-        ORDER BY attendance.id DESC
-        LIMIT 10
-    """).fetchall()
-
-    conn.close()
-
-    return render_template(
-        "dashboard.html",
-        total_students=total_students,
-        present_today=present_today,
-        absent_today=absent_today,
-        attendance_percentage=attendance_percentage,
-        recent_attendance=recent_attendance
-    )
-@app.route("/")
-def home():
 
     today = date.today().isoformat()
 
@@ -374,10 +529,133 @@ def home():
 
 
     # -------------------------------------------------
-    # TODAY ATTENDANCE PERCENTAGE
+    # TODAY PERCENTAGE
     # -------------------------------------------------
 
-    total_today = present_today + absent_today
+    total_today = (
+        present_today +
+        absent_today
+    )
+
+
+    if total_today > 0:
+
+        attendance_percentage = round(
+            (present_today / total_today) * 100,
+            2
+        )
+
+    else:
+
+        attendance_percentage = 0
+
+
+    # -------------------------------------------------
+    # RECENT ATTENDANCE
+    # -------------------------------------------------
+
+    recent_attendance = conn.execute("""
+        SELECT
+            students.name,
+            students.class_name,
+            students.roll_number,
+            attendance.attendance_date,
+            attendance.status
+
+        FROM attendance
+
+        JOIN students
+        ON students.id = attendance.student_id
+
+        ORDER BY attendance.id DESC
+
+        LIMIT 10
+    """).fetchall()
+
+
+    conn.close()
+
+
+    return render_template(
+        "dashboard.html",
+
+        total_students=total_students,
+
+        present_today=present_today,
+
+        absent_today=absent_today,
+
+        attendance_percentage=
+            attendance_percentage,
+
+        recent_attendance=
+            recent_attendance
+    )
+
+
+# =====================================================
+# HOME
+# =====================================================
+
+@app.route("/")
+def home():
+
+    # Student ko public dashboard nahi dikhana
+    if session.get("role") == "student":
+
+        return redirect(
+            url_for("student_portal")
+        )
+
+
+    today = date.today().isoformat()
+
+    conn = get_db_connection()
+
+
+    # -------------------------------------------------
+    # TOTAL STUDENTS
+    # -------------------------------------------------
+
+    total_students = conn.execute("""
+        SELECT COUNT(*) AS count
+        FROM students
+    """).fetchone()["count"]
+
+
+    # -------------------------------------------------
+    # TODAY PRESENT
+    # -------------------------------------------------
+
+    present_today = conn.execute("""
+        SELECT COUNT(*) AS count
+        FROM attendance
+        WHERE attendance_date = ?
+        AND status = 'Present'
+    """, (
+        today,
+    )).fetchone()["count"]
+
+
+    # -------------------------------------------------
+    # TODAY ABSENT
+    # -------------------------------------------------
+
+    absent_today = conn.execute("""
+        SELECT COUNT(*) AS count
+        FROM attendance
+        WHERE attendance_date = ?
+        AND status = 'Absent'
+    """, (
+        today,
+    )).fetchone()["count"]
+
+
+    total_today = (
+        present_today +
+        absent_today
+    )
+
 
     if total_today > 0:
 
@@ -397,7 +675,6 @@ def home():
 
     class_data = conn.execute("""
         SELECT
-
             students.class_name,
 
             COUNT(attendance.id) AS total,
@@ -413,15 +690,12 @@ def home():
         FROM students
 
         LEFT JOIN attendance
-
         ON students.id = attendance.student_id
-
         AND attendance.attendance_date = ?
 
         GROUP BY students.class_name
 
         ORDER BY students.class_name
-
     """, (
         today,
     )).fetchall()
@@ -475,27 +749,20 @@ def home():
 
     recent_attendance = conn.execute("""
         SELECT
-
             students.name,
-
             students.class_name,
-
             students.roll_number,
-
             attendance.attendance_date,
-
             attendance.status
 
         FROM attendance
 
         JOIN students
-
         ON students.id = attendance.student_id
 
         ORDER BY attendance.id DESC
 
         LIMIT 10
-
     """).fetchall()
 
 
@@ -503,7 +770,6 @@ def home():
 
 
     return render_template(
-
         "index.html",
 
         total_students=total_students,
@@ -522,16 +788,16 @@ def home():
             recent_attendance,
 
         today=today
-
     )
 
 
 # =====================================================
 # STUDENTS
+# HOD + TEACHER
 # =====================================================
 
 @app.route("/students")
-
+@teacher_or_hod_required
 def students():
 
     search = request.args.get(
@@ -567,17 +833,11 @@ def students():
 
         query += """
             AND (
-
                 name LIKE ?
-
                 OR roll_number LIKE ?
-
                 OR guardian_name LIKE ?
-
                 OR guardian_phone LIKE ?
-
                 OR section LIKE ?
-
             )
         """
 
@@ -610,6 +870,7 @@ def students():
             AND class_name = ?
         """
 
+
         params.append(
             selected_class
         )
@@ -621,16 +882,13 @@ def students():
 
     query += """
         ORDER BY
-
             class_name,
-
             roll_number,
-
             name
     """
 
 
-    students = conn.execute(
+    students_list = conn.execute(
         query,
         params
     ).fetchall()
@@ -642,11 +900,8 @@ def students():
 
     classes = conn.execute("""
         SELECT DISTINCT class_name
-
         FROM students
-
         ORDER BY class_name
-
     """).fetchall()
 
 
@@ -654,29 +909,29 @@ def students():
 
 
     return render_template(
-
         "students.html",
 
-        students=students,
+        students=students_list,
 
         classes=classes,
 
         search=search,
 
-        selected_class=selected_class
-
+        selected_class=
+            selected_class
     )
 
 
 # =====================================================
-# ADD STUDENT - ADMIN ONLY
+# ADD STUDENT
+# HOD ONLY
 # =====================================================
 
 @app.route(
     "/add_student",
     methods=["POST"]
 )
-@admin_required
+@hod_required
 def add_student():
 
     name = request.form.get(
@@ -727,25 +982,16 @@ def add_student():
 
     conn.execute("""
         INSERT INTO students
-
         (
-
             name,
-
             class_name,
-
             roll_number,
-
             guardian_name,
-
             guardian_phone,
-
             section
-
         )
 
         VALUES (?, ?, ?, ?, ?, ?)
-
     """, (
 
         name,
@@ -774,14 +1020,15 @@ def add_student():
 
 
 # =====================================================
-# EDIT STUDENT - ADMIN ONLY
+# EDIT STUDENT
+# HOD ONLY
 # =====================================================
 
 @app.route(
     "/edit_student/<int:student_id>",
     methods=["GET", "POST"]
 )
-@admin_required
+@hod_required
 def edit_student(student_id):
 
     conn = get_db_connection()
@@ -789,11 +1036,8 @@ def edit_student(student_id):
 
     student = conn.execute("""
         SELECT *
-
         FROM students
-
         WHERE id = ?
-
     """, (
         student_id,
     )).fetchone()
@@ -807,7 +1051,7 @@ def edit_student(student_id):
 
 
     # -------------------------------------------------
-    # UPDATE STUDENT
+    # UPDATE
     # -------------------------------------------------
 
     if request.method == "POST":
@@ -852,30 +1096,21 @@ def edit_student(student_id):
 
             conn.close()
 
-            return (
-                "Name and Class are required"
-            )
+            return "Name and Class are required"
 
 
         conn.execute("""
             UPDATE students
 
             SET
-
                 name = ?,
-
                 class_name = ?,
-
                 roll_number = ?,
-
                 guardian_name = ?,
-
                 guardian_phone = ?,
-
                 section = ?
 
             WHERE id = ?
-
         """, (
 
             name,
@@ -909,44 +1144,47 @@ def edit_student(student_id):
 
 
     return render_template(
-
         "edit_student.html",
-
         student=student
-
     )
 
 
 # =====================================================
-# DELETE STUDENT - ADMIN ONLY
+# DELETE STUDENT
+# HOD ONLY
 # =====================================================
 
 @app.route(
     "/delete_student/<int:student_id>"
 )
-@admin_required
+@hod_required
 def delete_student(student_id):
 
     conn = get_db_connection()
 
 
-    # Student ki attendance bhi delete hogi
-
+    # Student ki attendance delete hogi
     conn.execute("""
         DELETE FROM attendance
-
         WHERE student_id = ?
-
     """, (
         student_id,
     ))
 
 
+    # Student delete
     conn.execute("""
         DELETE FROM students
-
         WHERE id = ?
+    """, (
+        student_id,
+    ))
 
+
+    # Student login bhi delete
+    conn.execute("""
+        DELETE FROM users
+        WHERE student_id = ?
     """, (
         student_id,
     ))
@@ -964,9 +1202,11 @@ def delete_student(student_id):
 
 # =====================================================
 # DAILY ATTENDANCE
+# HOD + TEACHER
 # =====================================================
 
 @app.route("/attendance")
+@teacher_or_hod_required
 def attendance():
 
     selected_date = request.args.get(
@@ -980,31 +1220,22 @@ def attendance():
 
     students = conn.execute("""
         SELECT *
-
         FROM students
-
         ORDER BY
-
             class_name,
-
             roll_number,
-
             name
-
     """).fetchall()
 
 
     attendance_records = conn.execute("""
         SELECT
-
             student_id,
-
             status
 
         FROM attendance
 
         WHERE attendance_date = ?
-
     """, (
         selected_date,
     )).fetchall()
@@ -1024,32 +1255,40 @@ def attendance():
 
 
     return render_template(
-
         "attendance.html",
 
         students=students,
 
         selected_date=selected_date,
 
-        attendance_dict=attendance_dict
-
+        attendance_dict=
+            attendance_dict
     )
 
 
 # =====================================================
-# SAVE ATTENDANCE - ADMIN ONLY
+# SAVE ATTENDANCE
+# HOD + TEACHER
 # =====================================================
 
 @app.route(
     "/save_attendance",
     methods=["POST"]
 )
-@admin_required
+@teacher_or_hod_required
 def save_attendance():
 
-    attendance_date = request.form[
-        "attendance_date"
-    ]
+    attendance_date = request.form.get(
+        "attendance_date",
+        ""
+    )
+
+
+    if not attendance_date:
+
+        return redirect(
+            "/attendance"
+        )
 
 
     conn = get_db_connection()
@@ -1071,6 +1310,15 @@ def save_attendance():
         )
 
 
+        # Only valid status allowed
+        if status not in [
+            "Present",
+            "Absent"
+        ]:
+
+            status = "Absent"
+
+
         existing = conn.execute("""
             SELECT id
 
@@ -1079,7 +1327,6 @@ def save_attendance():
             WHERE student_id = ?
 
             AND attendance_date = ?
-
         """, (
 
             student_id,
@@ -1099,7 +1346,6 @@ def save_attendance():
                 WHERE student_id = ?
 
                 AND attendance_date = ?
-
             """, (
 
                 status,
@@ -1115,19 +1361,13 @@ def save_attendance():
 
             conn.execute("""
                 INSERT INTO attendance
-
                 (
-
                     student_id,
-
                     attendance_date,
-
                     status
-
                 )
 
                 VALUES (?, ?, ?)
-
             """, (
 
                 student_id,
@@ -1151,9 +1391,11 @@ def save_attendance():
 
 # =====================================================
 # REPORTS
+# HOD + TEACHER
 # =====================================================
 
 @app.route("/reports")
+@teacher_or_hod_required
 def reports():
 
     selected_month = request.args.get(
@@ -1167,17 +1409,12 @@ def reports():
 
     students = conn.execute("""
         SELECT *
-
         FROM students
 
         ORDER BY
-
             class_name,
-
             roll_number,
-
             name
-
     """).fetchall()
 
 
@@ -1185,7 +1422,6 @@ def reports():
 
 
     for student in students:
-
 
         if selected_month:
 
@@ -1197,7 +1433,6 @@ def reports():
                 WHERE student_id = ?
 
                 AND attendance_date LIKE ?
-
             """, (
 
                 student["id"],
@@ -1217,7 +1452,6 @@ def reports():
                 AND status = 'Present'
 
                 AND attendance_date LIKE ?
-
             """, (
 
                 student["id"],
@@ -1235,11 +1469,8 @@ def reports():
                 FROM attendance
 
                 WHERE student_id = ?
-
             """, (
-
                 student["id"],
-
             )).fetchone()[0]
 
 
@@ -1251,11 +1482,8 @@ def reports():
                 WHERE student_id = ?
 
                 AND status = 'Present'
-
             """, (
-
                 student["id"],
-
             )).fetchone()[0]
 
 
@@ -1307,35 +1535,62 @@ def reports():
 
 
     return render_template(
-
         "reports.html",
 
         reports=report_data,
 
-        selected_month=selected_month
-
+        selected_month=
+            selected_month
     )
 
 
 # =====================================================
 # INDIVIDUAL STUDENT REPORT
+# HOD + TEACHER
+# STUDENT = OWN ONLY
 # =====================================================
 
 @app.route(
     "/student_report/<int:student_id>"
 )
+@login_required
 def student_report(student_id):
+
+    user_role = session.get("role")
+
+    user_student_id = session.get(
+        "student_id"
+    )
+
+
+    # Student sirf apna report dekh sakta hai
+    if user_role == "student":
+
+        if user_student_id != student_id:
+
+            return """
+            <h2 style="text-align:center;margin-top:50px;">
+                🚫 Access Denied
+            </h2>
+            """, 403
+
+
+    # Teacher/HOD allowed
+    elif user_role not in [
+        "hod",
+        "teacher"
+    ]:
+
+        return "Access Denied", 403
+
 
     conn = get_db_connection()
 
 
     student = conn.execute("""
         SELECT *
-
         FROM students
-
         WHERE id = ?
-
     """, (
         student_id,
     )).fetchone()
@@ -1345,14 +1600,12 @@ def student_report(student_id):
 
         conn.close()
 
-        return "Student not found"
+        return "Student not found", 404
 
 
     attendance_records = conn.execute("""
         SELECT
-
             attendance_date,
-
             status
 
         FROM attendance
@@ -1360,7 +1613,6 @@ def student_report(student_id):
         WHERE student_id = ?
 
         ORDER BY attendance_date DESC
-
     """, (
         student_id,
     )).fetchall()
@@ -1422,23 +1674,51 @@ def student_report(student_id):
 
 # =====================================================
 # STUDENT PROFILE
+# HOD + TEACHER
+# STUDENT = OWN ONLY
 # =====================================================
 
 @app.route(
     "/student_profile/<int:student_id>"
 )
+@login_required
 def student_profile(student_id):
+
+    user_role = session.get("role")
+
+    user_student_id = session.get(
+        "student_id"
+    )
+
+
+    # Student sirf apni profile
+    if user_role == "student":
+
+        if user_student_id != student_id:
+
+            return """
+            <h2 style="text-align:center;margin-top:50px;">
+                🚫 Access Denied
+            </h2>
+            """, 403
+
+
+    # Teacher/HOD
+    elif user_role not in [
+        "hod",
+        "teacher"
+    ]:
+
+        return "Access Denied", 403
+
 
     conn = get_db_connection()
 
 
     student = conn.execute("""
         SELECT *
-
         FROM students
-
         WHERE id = ?
-
     """, (
         student_id,
     )).fetchone()
@@ -1448,7 +1728,7 @@ def student_profile(student_id):
 
         conn.close()
 
-        return "Student not found"
+        return "Student not found", 404
 
 
     total = conn.execute("""
@@ -1457,7 +1737,6 @@ def student_profile(student_id):
         FROM attendance
 
         WHERE student_id = ?
-
     """, (
         student_id,
     )).fetchone()[0]
@@ -1471,7 +1750,6 @@ def student_profile(student_id):
         WHERE student_id = ?
 
         AND status = 'Present'
-
     """, (
         student_id,
     )).fetchone()[0]
@@ -1513,11 +1791,130 @@ def student_profile(student_id):
 
 
 # =====================================================
+# STUDENT PORTAL
+# STUDENT ONLY
+# =====================================================
+
+@app.route("/student_portal")
+@role_required("student")
+def student_portal():
+
+    student_id = session.get(
+        "student_id"
+    )
+
+
+    if not student_id:
+
+        return """
+        <h2 style="text-align:center;margin-top:50px;">
+            Student account kisi student se linked nahi hai.
+        </h2>
+        """, 400
+
+
+    conn = get_db_connection()
+
+
+    student = conn.execute("""
+        SELECT *
+        FROM students
+        WHERE id = ?
+    """, (
+        student_id,
+    )).fetchone()
+
+
+    if not student:
+
+        conn.close()
+
+        return "Student record nahi mila.", 404
+
+
+    attendance = conn.execute("""
+        SELECT
+            attendance_date,
+            status
+
+        FROM attendance
+
+        WHERE student_id = ?
+
+        ORDER BY attendance_date DESC
+    """, (
+        student_id,
+    )).fetchall()
+
+
+    total_days = len(
+        attendance
+    )
+
+
+    present_days = sum(
+
+        1
+
+        for row in attendance
+
+        if row["status"] == "Present"
+
+    )
+
+
+    absent_days = sum(
+
+        1
+
+        for row in attendance
+
+        if row["status"] == "Absent"
+
+    )
+
+
+    if total_days > 0:
+
+        percentage = round(
+            (present_days / total_days) * 100,
+            2
+        )
+
+    else:
+
+        percentage = 0
+
+
+    conn.close()
+
+
+    return render_template(
+
+        "student_portal.html",
+
+        student=student,
+
+        attendance=attendance,
+
+        total_days=total_days,
+
+        present_days=present_days,
+
+        absent_days=absent_days,
+
+        percentage=percentage
+
+    )
+
+
+# =====================================================
 # CSV EXPORT
+# HOD ONLY
 # =====================================================
 
 @app.route("/export_csv")
-@admin_required
+@hod_required
 def export_csv():
 
     selected_month = request.args.get(
@@ -1599,10 +1996,6 @@ def export_csv():
     )
 
 
-    # -------------------------------------------------
-    # CSV HEADER
-    # -------------------------------------------------
-
     writer.writerow([
 
         "Roll Number",
@@ -1611,11 +2004,11 @@ def export_csv():
 
         "Class",
 
-        "Section",
-
         "Guardian Name",
 
         "Guardian Phone",
+
+        "Section",
 
         "Date",
 
@@ -1623,10 +2016,6 @@ def export_csv():
 
     ])
 
-
-    # -------------------------------------------------
-    # CSV DATA
-    # -------------------------------------------------
 
     for record in records:
 
@@ -1638,11 +2027,11 @@ def export_csv():
 
             record["class_name"],
 
-            record["section"],
-
             record["guardian_name"],
 
             record["guardian_phone"],
+
+            record["section"],
 
             record["attendance_date"],
 
