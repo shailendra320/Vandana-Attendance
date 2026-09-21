@@ -15,7 +15,7 @@ import io
 import os
 from functools import wraps
 from werkzeug.security import check_password_hash
-
+from datetime import datetime
 
 # =====================================================
 # FLASK APP
@@ -280,7 +280,53 @@ def logout():
 # =====================================================
 # DASHBOARD
 # =====================================================
+@app.route("/dashboard")
+def dashboard():
+    conn = get_db_connection()
 
+    total_students = conn.execute(
+        "SELECT COUNT(*) FROM students"
+    ).fetchone()[0]
+
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    present_today = conn.execute(
+        "SELECT COUNT(*) FROM attendance WHERE date = ? AND status = 'Present'",
+        (today,)
+    ).fetchone()[0]
+
+    absent_today = conn.execute(
+        "SELECT COUNT(*) FROM attendance WHERE date = ? AND status = 'Absent'",
+        (today,)
+    ).fetchone()[0]
+
+    total_today = present_today + absent_today
+
+    if total_today > 0:
+        attendance_percentage = round(
+            (present_today / total_today) * 100, 1
+        )
+    else:
+        attendance_percentage = 0
+
+    recent_attendance = conn.execute("""
+        SELECT attendance.date, students.name, attendance.status
+        FROM attendance
+        JOIN students ON students.id = attendance.student_id
+        ORDER BY attendance.id DESC
+        LIMIT 10
+    """).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "dashboard.html",
+        total_students=total_students,
+        present_today=present_today,
+        absent_today=absent_today,
+        attendance_percentage=attendance_percentage,
+        recent_attendance=recent_attendance
+    )
 @app.route("/")
 def home():
 
@@ -485,6 +531,7 @@ def home():
 # =====================================================
 
 @app.route("/students")
+
 def students():
 
     search = request.args.get(
